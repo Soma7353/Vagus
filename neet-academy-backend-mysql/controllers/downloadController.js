@@ -6,7 +6,7 @@ exports.uploadFile = async (req, res) => {
 
     const file = await Download.create({
       title: req.body.title,
-      filePath: `/uploads/downloads/${req.file.filename}`, // ✅ updated from fileUrl
+      filePath: `/uploads/downloads/${req.file.filename}`,
     });
 
     res.status(201).json(file);
@@ -28,8 +28,7 @@ exports.getAllDownloads = async (req, res) => {
 
 exports.deleteDownload = async (req, res) => {
   try {
-    const id = req.params.id;
-    const file = await Download.findByPk(id);
+    const file = await Download.findByPk(req.params.id);
     if (!file) return res.status(404).json({ error: 'File not found' });
 
     await file.destroy();
@@ -42,8 +41,7 @@ exports.deleteDownload = async (req, res) => {
 
 exports.updateDownload = async (req, res) => {
   try {
-    const id = req.params.id;
-    const file = await Download.findByPk(id);
+    const file = await Download.findByPk(req.params.id);
     if (!file) return res.status(404).json({ error: 'File not found' });
 
     const updatedData = {
@@ -51,7 +49,7 @@ exports.updateDownload = async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.filePath = `/uploads/downloads/${req.file.filename}`; // ✅ updated from fileUrl
+      updatedData.filePath = `/uploads/downloads/${req.file.filename}`;
     }
 
     await file.update(updatedData);

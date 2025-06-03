@@ -13,22 +13,22 @@ const Results = () => {
   const [selectedYear, setSelectedYear] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchResults = async () => {
-    try {
-      const res = await api.get('/api/results');
-      const data = res.data;
-      setResults(data);
-      const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
-      setYears(uniqueYears);
-      setSelectedYear(uniqueYears[0] || null);
-    } catch (err) {
-      console.error('Failed to fetch results:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const res = await api.get('/api/results');
+        const data = res.data;
+        setResults(data);
+        const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
+        setYears(uniqueYears);
+        setSelectedYear(uniqueYears[0] || null);
+      } catch (err) {
+        console.error('Failed to fetch results:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchResults();
   }, []);
 
@@ -49,7 +49,25 @@ const Results = () => {
     ],
   };
 
-  if (loading) return <div className="text-center py-10">Loading results...</div>;
+  if (!API_BASE_URL) {
+    return (
+      <div className="text-center py-10 text-red-600">
+        ⚠️ Environment variable <code>REACT_APP_API_BASE_URL</code> is not set.
+      </div>
+    );
+  }
+
+  if (loading) {
+    return <div className="text-center py-10">Loading results...</div>;
+  }
+
+  if (filtered.length === 0) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        No achievers found for NEET {selectedYear}.
+      </div>
+    );
+  }
 
   return (
     <section id="results" className="py-16 bg-white">
@@ -61,8 +79,10 @@ const Results = () => {
             <button
               key={year}
               onClick={() => setSelectedYear(year)}
-              className={`px-4 py-1 rounded-full border ${
-                selectedYear === year ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+              className={`px-4 py-1 rounded-full border transition-colors ${
+                selectedYear === year
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-gray-200 text-gray-800 border-gray-300'
               }`}
             >
               NEET {year}
@@ -78,7 +98,10 @@ const Results = () => {
                   src={`${API_BASE_URL}${r.photo}`}
                   alt={r.name}
                   className="w-full h-64 object-cover"
-                  onError={(e) => { e.target.src = '/fallback.png'; }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/fallback.png';
+                  }}
                 />
                 <div className="bg-blue-600 text-white py-3">
                   <h4 className="text-lg font-bold">{r.name}</h4>

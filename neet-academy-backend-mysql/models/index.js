@@ -1,45 +1,30 @@
-const { Sequelize, DataTypes } = require('sequelize');
+// models/index.js
+const sequelize = require('../config/database');
+const { DataTypes } = require('sequelize');
 
-// Adjust these values according to your actual DB config
-const sequelize = new Sequelize(
-  process.env.DB_NAME,     // e.g., 'your_db_name'
-  process.env.DB_USER,     // e.g., 'root'
-  process.env.DB_PASSWORD, // e.g., 'password'
-  {
-    host: process.env.DB_HOST || 'localhost',  // fallback for local dev
-    dialect: 'mysql',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // for Render/TiDB
-      }
-    }
-  }
-);
+// Load all models
+const Result = require('./Result');
+const GalleryImage = require('./GalleryImage');
+const Testimonial = require('./Testimonial');
+const Download = require('./Download');
 
-// ✅ Initialize models
-const Result = require('./Result')(sequelize, DataTypes);
-const GalleryImage = require('./GalleryImage')(sequelize, DataTypes);
-const Testimonial = require('./Testimonial')(sequelize, DataTypes);
-const Download = require('./Download')(sequelize, DataTypes);
-
-// 🔁 Sync database
+// Add syncDatabase utility
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync(); // or { force: true } to drop & recreate tables
-    console.log('✅ MySQL synced successfully');
+    await sequelize.sync(); // use { alter: true } or { force: true } as needed
+    console.log('MySQL synced successfully');
   } catch (err) {
-    console.error('❌ Failed to sync DB:', err.message);
+    console.error('Failed to sync DB:', err);
   }
 };
 
-// 🚀 Export everything
+// Export all models and sequelize
 module.exports = {
   sequelize,
   syncDatabase,
   Result,
   GalleryImage,
   Testimonial,
-  Download
+  Download,
 };

@@ -73,13 +73,18 @@ const Results = () => {
         <Slider {...settings}>
           {filtered.map((r) => (
             <div key={r.id} className="p-2">
-              <div className="bg-blue-600 rounded-xl text-center text-white p-4 shadow-lg relative">
+              <div
+                className="rounded-xl text-center text-black p-4 shadow-lg relative"
+                style={{ backgroundColor: '#f2f3f4' }}
+              >
                 <div className="relative w-40 h-40 mx-auto mb-4">
                   <img
                     src={`${API_BASE_URL}${r.photo}`}
                     alt={r.name}
                     className="w-40 h-40 object-cover rounded-full border-4 border-yellow-400"
-                    onError={(e) => { e.target.src = '/fallback.png'; }}
+                    onError={(e) => {
+                      e.target.src = '/fallback.png';
+                    }}
                   />
                   <div className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md border-2 border-white">
                     {r.score} / 720

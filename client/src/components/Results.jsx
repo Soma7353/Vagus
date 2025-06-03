@@ -13,22 +13,22 @@ const Results = () => {
   const [selectedYear, setSelectedYear] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        const res = await api.get('/api/results');
-        const data = res.data;
-        setResults(data);
-        const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
-        setYears(uniqueYears);
-        setSelectedYear(uniqueYears[0] || null);
-      } catch (err) {
-        console.error('Failed to fetch results:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchResults = async () => {
+    try {
+      const res = await api.get('/api/results');
+      const data = res.data;
+      setResults(data);
+      const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
+      setYears(uniqueYears);
+      setSelectedYear(uniqueYears[0] || null);
+    } catch (err) {
+      console.error('Failed to fetch results:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResults();
   }, []);
 
@@ -49,25 +49,7 @@ const Results = () => {
     ],
   };
 
-  if (!API_BASE_URL) {
-    return (
-      <div className="text-center py-10 text-red-600">
-        ⚠️ Environment variable <code>REACT_APP_API_BASE_URL</code> is not set.
-      </div>
-    );
-  }
-
-  if (loading) {
-    return <div className="text-center py-10">Loading results...</div>;
-  }
-
-  if (filtered.length === 0) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        No achievers found for NEET {selectedYear}.
-      </div>
-    );
-  }
+  if (loading) return <div className="text-center py-10">Loading results...</div>;
 
   return (
     <section id="results" className="py-16 bg-white">
@@ -79,10 +61,8 @@ const Results = () => {
             <button
               key={year}
               onClick={() => setSelectedYear(year)}
-              className={`px-4 py-1 rounded-full border transition-colors ${
-                selectedYear === year
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-gray-200 text-gray-800 border-gray-300'
+              className={`px-4 py-1 rounded-full border ${
+                selectedYear === year ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
               }`}
             >
               NEET {year}
@@ -93,21 +73,23 @@ const Results = () => {
         <Slider {...settings}>
           {filtered.map((r) => (
             <div key={r.id} className="p-2">
-              <div className="border border-blue-600 rounded shadow text-center overflow-hidden">
-                <img
-                  src={`${API_BASE_URL}${r.photo}`}
-                  alt={r.name}
-                  className="w-full h-64 object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/fallback.png';
-                  }}
-                />
-                <div className="bg-blue-600 text-white py-3">
-                  <h4 className="text-lg font-bold">{r.name}</h4>
-                  <p className="text-sm">{r.college}</p>
-                  <p className="text-sm">Rank: {r.rank}</p>
+              <div className="bg-white rounded-xl shadow-lg text-center border border-gray-200 p-4">
+                <div className="relative w-40 h-40 mx-auto mb-4">
+                  <img
+                    src={`${API_BASE_URL}${r.photo}`}
+                    alt={r.name}
+                    className="w-40 h-40 object-cover rounded-full border-4 border-yellow-400"
+                    onError={(e) => { e.target.src = '/fallback.png'; }}
+                  />
+                  <div className="absolute bottom-0 right-0 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-md border-2 border-white">
+                    {r.score} / 720
+                  </div>
                 </div>
+                <h4 className="text-lg font-bold text-blue-900">{r.name}</h4>
+                <p className="text-base font-bold bg-yellow-400 inline-block px-2 py-1 rounded mt-1">
+                  {r.college}
+                </p>
+                <p className="text-sm text-gray-600 mt-1">{r.city}</p>
               </div>
             </div>
           ))}

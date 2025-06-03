@@ -11,15 +11,25 @@ const Results = () => {
   const [results, setResults] = useState([]);
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    api.get('/api/results').then((res) => {
+  const fetchResults = async () => {
+    try {
+      const res = await api.get('/api/results');
       const data = res.data;
       setResults(data);
       const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
       setYears(uniqueYears);
       setSelectedYear(uniqueYears[0] || null);
-    });
+    } catch (err) {
+      console.error('Failed to fetch results:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchResults();
   }, []);
 
   const filtered = results.filter((r) => r.year === selectedYear);
@@ -29,30 +39,29 @@ const Results = () => {
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 3,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 3 } },
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
       { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
 
+  if (loading) return <div className="text-center py-10">Loading results...</div>;
+
   return (
     <section id="results" className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800 uppercase tracking-widest">
-          Our NEET/JEE Achievers
-        </h2>
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Our Achievers</h2>
 
         <div className="flex justify-center gap-2 mb-6 flex-wrap">
           {years.map((year) => (
             <button
               key={year}
               onClick={() => setSelectedYear(year)}
-              className={`px-4 py-1 rounded-full border text-sm font-medium ${
+              className={`px-4 py-1 rounded-full border ${
                 selectedYear === year ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
               }`}
             >
@@ -63,24 +72,18 @@ const Results = () => {
 
         <Slider {...settings}>
           {filtered.map((r) => (
-            <div key={r.id} className="p-3">
-              <div className="bg-white border rounded-xl shadow-lg overflow-hidden text-center">
-                <div className="relative">
-                  <img
-                    src={`${API_BASE_URL}${r.photo}`}
-                    alt={r.name}
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold shadow">
-                    {r.rank}/720
-                  </div>
-                </div>
-                <div className="bg-blue-600 text-white py-3 space-y-1">
-                  <h4 className="text-md font-bold uppercase">{r.name}</h4>
-                  <div className="bg-yellow-400 text-black text-sm font-semibold px-2 py-1 rounded inline-block">
-                    {r.college}
-                  </div>
-                  <p className="text-xs text-gray-200">{r.city}</p>
+            <div key={r.id} className="p-2">
+              <div className="border border-blue-600 rounded shadow text-center overflow-hidden">
+                <img
+                  src={`${API_BASE_URL}${r.photo}`}
+                  alt={r.name}
+                  className="w-full h-64 object-cover"
+                  onError={(e) => { e.target.src = '/fallback.png'; }}
+                />
+                <div className="bg-blue-600 text-white py-3">
+                  <h4 className="text-lg font-bold">{r.name}</h4>
+                  <p className="text-sm">{r.college}</p>
+                  <p className="text-sm">Rank: {r.rank}</p>
                 </div>
               </div>
             </div>

@@ -4,6 +4,8 @@ import api from '../api';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const Gallery = () => {
   const [images, setImages] = useState([]);
 
@@ -14,41 +16,48 @@ const Gallery = () => {
   }, []);
 
   const settings = {
-    dots: true,
+    dots: false,
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: (
-      <div className="slick-arrow right-2 text-blue-600 text-2xl cursor-pointer z-10">❯</div>
+      <div className="slick-arrow right-3 text-blue-600 text-2xl cursor-pointer z-20">❯</div>
     ),
     prevArrow: (
-      <div className="slick-arrow left-2 text-blue-600 text-2xl cursor-pointer z-10">❮</div>
+      <div className="slick-arrow left-3 text-blue-600 text-2xl cursor-pointer z-20">❮</div>
     ),
     responsive: [
+      { breakpoint: 1280, settings: { slidesToShow: 3 } },
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
       { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
 
   return (
-    <section id="gallery" className="py-16 bg-gray-100">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Gallery</h2>
-        <Slider {...settings}>
-          {images.map((img) => (
-            <div key={img.id} className="p-2">
-              <div className="overflow-hidden rounded shadow">
-                <img
-                  src={`http://localhost:5000${img.filePath}`}
-                  alt={img.title}
-                  className="w-full h-64 object-cover"
-                />
+    <section id="gallery" className="py-16 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800 uppercase tracking-wider">
+          Gallery
+        </h2>
+        {images.length > 0 ? (
+          <Slider {...settings}>
+            {images.map((img) => (
+              <div key={img.id} className="p-3">
+                <div className="rounded overflow-hidden shadow-lg">
+                  <img
+                    src={`${API_BASE_URL}${img.filePath}`}
+                    alt={img.title || 'Gallery Image'}
+                    className="w-full h-64 object-cover"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        ) : (
+          <p className="text-center text-gray-500">No images found.</p>
+        )}
       </div>
     </section>
   );

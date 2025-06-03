@@ -1,7 +1,7 @@
-// server.js
+// server.js at root
 require('dotenv').config();
-const app = require('./app');
-const { sequelize, syncDatabase } = require('./models'); // ✅ use shared instance from models
+const app = require('./neet-academy-backend-mysql/app');
+const { sequelize, syncDatabase } = require('./neet-academy-backend-mysql/models');
 
 const PORT = process.env.PORT || 5000;
 

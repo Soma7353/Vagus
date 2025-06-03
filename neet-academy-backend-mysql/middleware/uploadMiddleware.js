@@ -1,33 +1,30 @@
+// uploadMiddleware.js
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure upload directories exist
-const createDirIfNotExists = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+// Utility to ensure directory exists
+const ensureDir = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
 };
 
-const galleryDir = path.join(__dirname, 'uploads/gallery');
-const downloadsDir = path.join(__dirname, 'uploads/downloads');
-createDirIfNotExists(galleryDir);
-createDirIfNotExists(downloadsDir);
-
+// Multer storage configuration (flexible for different types)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (req.baseUrl.includes('gallery')) {
-      cb(null, galleryDir);
-    } else if (req.baseUrl.includes('downloads')) {
-      cb(null, downloadsDir);
-    } else {
-      cb(new Error('Invalid upload route'));
-    }
+    const type = req.baseUrl.includes('gallery') ? 'gallery' : 'downloads';
+    const uploadPath = path.join(__dirname, 'uploads', type);
+    ensureDir(uploadPath);
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
+    const uniqueName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueName);
+  }
 });
 
+// Export the middleware
 const upload = multer({ storage });
+
 module.exports = upload;

@@ -1,4 +1,3 @@
-// models/Gallery.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
@@ -7,10 +6,14 @@ const Gallery = sequelize.define('Gallery', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  filePath: {
-    type: DataTypes.STRING,
+  fileBlob: {
+    type: DataTypes.BLOB('long'),
     allowNull: false,
   },
+  mimeType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
 module.exports = Gallery;

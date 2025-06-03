@@ -7,7 +7,10 @@ const Result = sequelize.define('Result', {
   college: DataTypes.STRING,
   year: DataTypes.STRING,
   color: DataTypes.STRING,
-  photo: DataTypes.STRING,
+
+  // Replace 'photo' string with actual image blob and mime type
+  photoBlob: DataTypes.BLOB('long'),
+  photoMimeType: DataTypes.STRING,
 });
 
 module.exports = Result;

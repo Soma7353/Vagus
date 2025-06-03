@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const downloadController = require('../controllers/downloadController');
-const upload = require('../middleware/uploadMiddleware'); // ✅ Corrected path
+const upload = require('../middleware/uploadMiddleware');
 
-// Routes
 router.post('/', upload.single('file'), downloadController.uploadFile);
 router.get('/', downloadController.getAllDownloads);
-router.delete('/:id', downloadController.deleteDownload);
+router.get('/:id/download', downloadController.downloadFile); // <--- file download route
 router.put('/:id', upload.single('file'), downloadController.updateDownload);
+router.delete('/:id', downloadController.deleteDownload);
 
 module.exports = router;

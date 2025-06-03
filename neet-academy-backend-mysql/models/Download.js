@@ -6,10 +6,14 @@ const Download = sequelize.define('Download', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  filePath: { // ✅ MUST match the actual column name in DB
-    type: DataTypes.STRING,
+  fileBlob: {
+    type: DataTypes.BLOB('long'),
     allowNull: false,
   },
+  mimeType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
 module.exports = Download;

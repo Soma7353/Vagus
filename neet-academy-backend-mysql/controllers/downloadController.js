@@ -1,3 +1,4 @@
+// controllers/downloadController.js
 const Download = require('../models/Download');
 
 exports.uploadFile = async (req, res) => {
@@ -6,7 +7,8 @@ exports.uploadFile = async (req, res) => {
 
     const file = await Download.create({
       title: req.body.title,
-      filePath: `/uploads/downloads/${req.file.filename}`,
+      fileBlob: req.file.buffer,
+      mimeType: req.file.mimetype,
     });
 
     res.status(201).json(file);
@@ -18,7 +20,9 @@ exports.uploadFile = async (req, res) => {
 
 exports.getAllDownloads = async (req, res) => {
   try {
-    const files = await Download.findAll();
+    const files = await Download.findAll({
+      attributes: ['id', 'title', 'createdAt', 'updatedAt'],
+    });
     res.status(200).json(files);
   } catch (err) {
     console.error('Download fetch error:', err);
@@ -26,16 +30,17 @@ exports.getAllDownloads = async (req, res) => {
   }
 };
 
-exports.deleteDownload = async (req, res) => {
+exports.downloadFile = async (req, res) => {
   try {
     const file = await Download.findByPk(req.params.id);
     if (!file) return res.status(404).json({ error: 'File not found' });
 
-    await file.destroy();
-    res.status(200).json({ message: 'File deleted' });
+    res.setHeader('Content-Type', file.mimeType);
+    res.setHeader('Content-Disposition', `attachment; filename="${file.title}"`);
+    res.send(file.fileBlob);
   } catch (err) {
-    console.error('Download delete error:', err);
-    res.status(500).json({ error: 'Failed to delete file' });
+    console.error('Download file error:', err);
+    res.status(500).json({ error: 'Failed to download file' });
   }
 };
 
@@ -49,7 +54,8 @@ exports.updateDownload = async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.filePath = `/uploads/downloads/${req.file.filename}`;
+      updatedData.fileBlob = req.file.buffer;
+      updatedData.mimeType = req.file.mimetype;
     }
 
     await file.update(updatedData);
@@ -57,5 +63,18 @@ exports.updateDownload = async (req, res) => {
   } catch (err) {
     console.error('Download update error:', err);
     res.status(500).json({ error: 'Failed to update file' });
+  }
+};
+
+exports.deleteDownload = async (req, res) => {
+  try {
+    const file = await Download.findByPk(req.params.id);
+    if (!file) return res.status(404).json({ error: 'File not found' });
+
+    await file.destroy();
+    res.status(200).json({ message: 'File deleted' });
+  } catch (err) {
+    console.error('Download delete error:', err);
+    res.status(500).json({ error: 'Failed to delete file' });
   }
 };

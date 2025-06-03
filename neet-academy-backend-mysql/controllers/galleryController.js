@@ -6,8 +6,10 @@ exports.uploadImage = async (req, res) => {
 
     const image = await GalleryImage.create({
       title: req.body.title,
-      imageUrl: `/uploads/gallery/${req.file.filename}`,
+      image: req.file.buffer,       // store buffer (BLOB)
+      mimeType: req.file.mimetype,  // store mime type
     });
+
     res.status(201).json(image);
   } catch (err) {
     console.error('Gallery upload error:', err);
@@ -17,7 +19,10 @@ exports.uploadImage = async (req, res) => {
 
 exports.getAllImages = async (req, res) => {
   try {
-    const images = await GalleryImage.findAll();
+    // Don't send blobs here (too big), just metadata
+    const images = await GalleryImage.findAll({
+      attributes: ['id', 'title', 'createdAt', 'updatedAt'],
+    });
     res.status(200).json(images);
   } catch (err) {
     console.error('Gallery fetch error:', err);
@@ -25,10 +30,22 @@ exports.getAllImages = async (req, res) => {
   }
 };
 
+exports.getImageById = async (req, res) => {
+  try {
+    const image = await GalleryImage.findByPk(req.params.id);
+    if (!image) return res.status(404).json({ error: 'Image not found' });
+
+    res.setHeader('Content-Type', image.mimeType);
+    res.send(image.image);
+  } catch (err) {
+    console.error('Gallery get image error:', err);
+    res.status(500).json({ error: 'Failed to get image' });
+  }
+};
+
 exports.deleteImage = async (req, res) => {
   try {
-    const id = req.params.id;
-    const image = await GalleryImage.findByPk(id);
+    const image = await GalleryImage.findByPk(req.params.id);
     if (!image) return res.status(404).json({ error: 'Image not found' });
 
     await image.destroy();
@@ -41,8 +58,7 @@ exports.deleteImage = async (req, res) => {
 
 exports.updateImage = async (req, res) => {
   try {
-    const id = req.params.id;
-    const image = await GalleryImage.findByPk(id);
+    const image = await GalleryImage.findByPk(req.params.id);
     if (!image) return res.status(404).json({ error: 'Image not found' });
 
     const updatedData = {
@@ -50,7 +66,8 @@ exports.updateImage = async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.imageUrl = `/uploads/gallery/${req.file.filename}`;
+      updatedData.image = req.file.buffer;       // update blob
+      updatedData.mimeType = req.file.mimetype;  // update mime type
     }
 
     await image.update(updatedData);

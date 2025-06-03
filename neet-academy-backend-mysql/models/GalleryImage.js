@@ -6,10 +6,14 @@ const GalleryImage = sequelize.define('GalleryImage', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  imageUrl: {
-    type: DataTypes.STRING,
+  image: {
+    type: DataTypes.BLOB('long'),
     allowNull: false,
   },
+  mimeType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
 module.exports = GalleryImage;

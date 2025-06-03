@@ -1,7 +1,6 @@
-// server.js at root
 require('dotenv').config();
-const app = require('./neet-academy-backend-mysql/app');
-const { sequelize, syncDatabase } = require('./neet-academy-backend-mysql/models');
+const app = require('./app');
+const { sequelize, syncDatabase } = require('./models');
 
 const PORT = process.env.PORT || 5000;
 

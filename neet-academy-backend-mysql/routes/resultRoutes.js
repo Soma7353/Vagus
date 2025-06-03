@@ -5,31 +5,40 @@ const path = require('path');
 const fs = require('fs');
 const { Result } = require('../models');
 
-// Your multer config and routes here
+// Setup multer for results uploads
+const uploadDir = path.join(__dirname, '..', 'uploads', 'results');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => cb(null, uploadDir),
+  filename: (_, file, cb) => cb(null, Date.now() + '-' + file.originalname),
+});
 
-router.post('/', upload.single('photo'), async (req, res) => {
+const upload = multer({ storage });
 
+// Routes
+router.get('/', async (req, res) => {
   try {
-    const { name, rank, college, year, color } = req.body;
-
-    if (!req.file) return res.status(400).json({ error: 'Photo is required' });
-
-    const result = await Result.create({
-      name,
-      rank,
-      college,
-      year,
-      color,
-      photo: req.file.buffer,
-      photoMimeType: req.file.mimetype,
-    });
-
-    res.json(result);
+    const results = await Result.findAll({ order: [['createdAt', 'DESC']] });
+    res.json(results);
   } catch (err) {
-    console.error('Upload failed:', err);
-    res.status(500).json({ error: 'Upload failed' });
+    res.status(500).json({ error: 'Failed to fetch results' });
   }
 });
+
+router.post('/', upload.single('photo'), async (req, res) => {
+  try {
+    const { name, rank, college, year, color } = req.body;
+    const photo = req.file ? `/uploads/results/${req.file.filename}` : null;
+    const result = await Result.create({ name, rank, college, year, color, photo });
+    res.status(201).json(result);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to add result' });
+  }
+});
+
+// ... add update, delete routes similarly
 
 module.exports = router;

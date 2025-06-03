@@ -73,7 +73,7 @@ const Results = () => {
         <Slider {...settings}>
           {filtered.map((r) => (
             <div key={r.id} className="p-2">
-              <div className="bg-white rounded-xl shadow-lg text-center border border-gray-200 p-4">
+              <div className="bg-blue-600 rounded-xl text-center text-white p-4 shadow-lg relative">
                 <div className="relative w-40 h-40 mx-auto mb-4">
                   <img
                     src={`${API_BASE_URL}${r.photo}`}
@@ -81,15 +81,15 @@ const Results = () => {
                     className="w-40 h-40 object-cover rounded-full border-4 border-yellow-400"
                     onError={(e) => { e.target.src = '/fallback.png'; }}
                   />
-                  <div className="absolute bottom-0 right-0 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-md border-2 border-white">
+                  <div className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md border-2 border-white">
                     {r.score} / 720
                   </div>
                 </div>
-                <h4 className="text-lg font-bold text-blue-900">{r.name}</h4>
-                <p className="text-base font-bold bg-yellow-400 inline-block px-2 py-1 rounded mt-1">
+                <h4 className="text-lg font-bold uppercase">{r.name}</h4>
+                <p className="text-base font-bold bg-yellow-400 text-black inline-block px-3 py-1 rounded mt-2">
                   {r.college}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">{r.city}</p>
+                <p className="text-sm mt-1">{r.city}</p>
               </div>
             </div>
           ))}

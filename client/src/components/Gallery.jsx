@@ -4,7 +4,7 @@ import api from '../api';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-// Ensure environment variable is set correctly
+// Read API base URL from environment variable
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Gallery = () => {
@@ -39,10 +39,10 @@ const Gallery = () => {
     ],
   };
 
-  const buildImageUrl = (filePath) => {
-    if (!API_BASE_URL || !filePath) return '';
+  const buildImageUrl = (imageUrl) => {
+    if (!API_BASE_URL || !imageUrl) return '';
     const cleanBase = API_BASE_URL.replace(/\/+$/, '');
-    const cleanPath = filePath.replace(/^\/+/, '');
+    const cleanPath = imageUrl.replace(/^\/+/, '');
     return `${cleanBase}/${cleanPath}`;
   };
 
@@ -56,8 +56,7 @@ const Gallery = () => {
         {images.length > 0 ? (
           <Slider {...settings}>
             {images.map((img) => {
-              const imageUrl = buildImageUrl(img.filePath);
-              console.log("Image URL:", imageUrl);
+              const imageUrl = buildImageUrl(img.imageUrl);
               return (
                 <div key={img.id} className="p-3">
                   <div className="rounded overflow-hidden shadow-lg">
@@ -66,7 +65,7 @@ const Gallery = () => {
                       alt={img.title || 'Gallery Image'}
                       className="w-full h-64 object-cover"
                       onError={(e) => {
-                        e.target.src = '/default.jpg'; // Optional fallback
+                        e.target.src = '/default.jpg'; // fallback image
                       }}
                     />
                   </div>

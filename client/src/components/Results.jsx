@@ -5,6 +5,8 @@ import { NextArrow, PrevArrow } from './BlueArrows';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const Results = () => {
   const [results, setResults] = useState([]);
   const [years, setYears] = useState([]);
@@ -61,7 +63,7 @@ const Results = () => {
             <div key={r.id} className="p-2">
               <div className="border border-blue-600 rounded shadow text-center overflow-hidden">
                 <img
-                  src={`http://localhost:5000${r.photo}`}
+                  src={`${API_BASE_URL}${r.photo}`}
                   alt={r.name}
                   className="w-full h-64 object-cover"
                 />

@@ -1,12 +1,17 @@
-// app.js
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// CORS setup - allow only your frontend domain
+app.use(cors({
+  origin: 'https://your-frontend.vercel.app',  // Replace with your actual Vercel frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
+
+// Middleware to parse JSON and urlencoded bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

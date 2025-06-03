@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const DownloadSection = () => {
   const [downloads, setDownloads] = useState([]);
 
@@ -23,7 +25,7 @@ const DownloadSection = () => {
               <li key={doc.id} className="flex justify-between items-center bg-gray-100 p-4 rounded shadow">
                 <span className="text-gray-800 font-medium">{doc.title}</span>
                 <a
-                  href={`http://localhost:5000${doc.filePath}`}
+                  href={`${API_BASE_URL}${doc.filePath}`}
                   download
                   className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
                 >

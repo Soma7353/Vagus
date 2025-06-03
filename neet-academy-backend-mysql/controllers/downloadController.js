@@ -6,8 +6,9 @@ exports.uploadFile = async (req, res) => {
 
     const file = await Download.create({
       title: req.body.title,
-      fileUrl: `/uploads/downloads/${req.file.filename}`,
+      filePath: `/uploads/downloads/${req.file.filename}`, // ✅ updated from fileUrl
     });
+
     res.status(201).json(file);
   } catch (err) {
     console.error('Download upload error:', err);
@@ -50,7 +51,7 @@ exports.updateDownload = async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.fileUrl = `/uploads/downloads/${req.file.filename}`;
+      updatedData.filePath = `/uploads/downloads/${req.file.filename}`; // ✅ updated from fileUrl
     }
 
     await file.update(updatedData);

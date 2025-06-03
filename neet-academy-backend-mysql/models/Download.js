@@ -6,7 +6,7 @@ const Download = sequelize.define('Download', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  fileUrl: {
+  filePath: { // ✅ MUST match the actual column name in DB
     type: DataTypes.STRING,
     allowNull: false,
   },

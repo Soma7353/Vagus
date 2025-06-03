@@ -1,68 +1,68 @@
-const Gallery = require('../models/GalleryImage');
-const fs = require('fs');
+const { GalleryImage } = require('../models');
 const path = require('path');
+const fs = require('fs');
 
-// Upload new image
 exports.uploadImage = async (req, res) => {
   try {
     const { title } = req.body;
-    const filePath = `/uploads/gallery/${req.file.filename}`;
-    const image = await Gallery.create({ title, filePath });
-    res.status(201).json(image);
-  } catch (err) {
-    res.status(500).json({ message: 'Upload failed', error: err.message });
+    const image = req.file?.filename;
+
+    if (!image) return res.status(400).json({ message: 'No image uploaded.' });
+
+    const newImage = await GalleryImage.create({ title, image });
+    res.status(201).json(newImage);
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Server error during image upload.' });
   }
 };
 
-// Get all images
 exports.getAllImages = async (req, res) => {
   try {
-    const images = await Gallery.findAll({ order: [['createdAt', 'DESC']] });
+    const images = await GalleryImage.findAll({ order: [['createdAt', 'DESC']] });
     res.json(images);
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching images', error: err.message });
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    res.status(500).json({ message: 'Error fetching gallery images.' });
   }
 };
 
-// Delete image
 exports.deleteImage = async (req, res) => {
   try {
-    const id = req.params.id;
-    const image = await Gallery.findByPk(id);
-    if (!image) return res.status(404).json({ message: 'Image not found' });
+    const image = await GalleryImage.findByPk(req.params.id);
+    if (!image) return res.status(404).json({ message: 'Image not found.' });
 
-    const filePath = path.join(__dirname, '..', image.filePath);
+    const filePath = path.join(__dirname, '..', 'uploads', 'gallery', image.image);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
     await image.destroy();
-    res.json({ message: 'Image deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error deleting image', error: err.message });
+    res.json({ message: 'Image deleted.' });
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    res.status(500).json({ message: 'Error deleting image.' });
   }
 };
 
-// Update image or title
 exports.updateImage = async (req, res) => {
   try {
-    const id = req.params.id;
-    const gallery = await Gallery.findByPk(id);
-    if (!gallery) return res.status(404).json({ message: 'Image not found' });
+    const image = await GalleryImage.findByPk(req.params.id);
+    if (!image) return res.status(404).json({ message: 'Image not found.' });
 
-    if (req.file) {
-      // Delete old file
-      const oldPath = path.join(__dirname, '..', gallery.filePath);
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    const newFile = req.file?.filename;
+    const { title } = req.body;
 
-      gallery.filePath = `/uploads/gallery/${req.file.filename}`;
+    if (newFile && image.image) {
+      const oldFilePath = path.join(__dirname, '..', 'uploads', 'gallery', image.image);
+      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
     }
 
-    if (req.body.title) {
-      gallery.title = req.body.title;
-    }
+    image.title = title || image.title;
+    image.image = newFile || image.image;
+    await image.save();
 
-    await gallery.save();
-    res.json(gallery);
-  } catch (err) {
-    res.status(500).json({ message: 'Error updating image', error: err.message });
+    res.json(image);
+  } catch (error) {
+    console.error('Error updating image:', error);
+    res.status(500).json({ message: 'Error updating image.' });
   }
 };

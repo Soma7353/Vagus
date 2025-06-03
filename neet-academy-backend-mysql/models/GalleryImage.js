@@ -1,16 +1,14 @@
-// models/Gallery.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+module.exports = (sequelize, DataTypes) => {
+  const GalleryImage = sequelize.define('GalleryImage', {
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  });
 
-const Gallery = sequelize.define('Gallery', {
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  filePath: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
-
-module.exports = Gallery;
+  return GalleryImage;
+};

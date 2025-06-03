@@ -1,4 +1,15 @@
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { Result } = require('../models');
+
+// Your multer config and routes here
+
+
 router.post('/', upload.single('photo'), async (req, res) => {
+
   try {
     const { name, rank, college, year, color } = req.body;
 
@@ -20,3 +31,5 @@ router.post('/', upload.single('photo'), async (req, res) => {
     res.status(500).json({ error: 'Upload failed' });
   }
 });
+
+module.exports = router;

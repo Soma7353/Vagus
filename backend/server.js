@@ -16,7 +16,7 @@ const testimonialRoutes = require('./routes/testimonialRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const resultRoutes = require('./routes/resultRoutes');
-const admin = require('./routes/authRoutes'); // ✅ Added
+const admin = require('./routes/admin'); // ✅ Added
 
 // Route Mounting
 app.use('/api/testimonials', testimonialRoutes);

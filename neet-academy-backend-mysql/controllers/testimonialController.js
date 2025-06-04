@@ -1,40 +1,37 @@
-const { Testimonial } = require('../models');
+const Testimonial = require('../models/Testimonial');
 
-exports.addTestimonial = async (req, res) => {
+exports.create = async (req, res) => {
   try {
-    const { name, college, message, videoUrl } = req.body;
-    const t = await Testimonial.create({ name, college, message, videoUrl });
-    res.status(201).json(t);
+    const testimonial = await Testimonial.create({
+      name: req.body.name,
+      message: req.body.message,
+      image: req.file?.buffer,
+      mimeType: req.file?.mimetype
+    });
+    res.status(201).json(testimonial);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to add testimonial' });
+    res.status(500).json({ error: 'Create failed' });
   }
 };
 
-exports.getTestimonials = async (req, res) => {
+exports.getAll = async (req, res) => {
   try {
-    const list = await Testimonial.findAll();
-    res.json(list);
+    const testimonials = await Testimonial.findAll({
+      attributes: ['id', 'name', 'message']
+    });
+    res.status(200).json(testimonials);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch testimonials' });
+    res.status(500).json({ error: 'Error fetching' });
   }
 };
 
-exports.updateTestimonial = async (req, res) => {
+exports.delete = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updated = await Testimonial.update(req.body, { where: { id } });
-    res.json({ updated });
+    const testimonial = await Testimonial.findByPk(req.params.id);
+    if (!testimonial) return res.status(404).json({ error: 'Not found' });
+    await testimonial.destroy();
+    res.status(200).json({ message: 'Deleted' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update testimonial' });
-  }
-};
-
-exports.deleteTestimonial = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Testimonial.destroy({ where: { id } });
-    res.json({ message: 'Deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to delete testimonial' });
+    res.status(500).json({ error: 'Error deleting' });
   }
 };

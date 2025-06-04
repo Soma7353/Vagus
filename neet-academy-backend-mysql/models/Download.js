@@ -4,15 +4,15 @@ const sequelize = require('../config/database');
 const Download = sequelize.define('Download', {
   title: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
-  fileBlob: {
+  file: {
     type: DataTypes.BLOB('long'),
-    allowNull: false,
+    allowNull: false
   },
   mimeType: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   }
 });
 

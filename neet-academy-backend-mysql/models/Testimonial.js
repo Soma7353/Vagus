@@ -1,11 +1,21 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const sequelize = require('../config/database');
 
 const Testimonial = sequelize.define('Testimonial', {
-  name: DataTypes.STRING,
-  college: DataTypes.STRING,
-  message: DataTypes.TEXT,
-  videoUrl: DataTypes.STRING,
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  message: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  image: {
+    type: DataTypes.BLOB('long'),
+    allowNull: true
+  },
+  mimeType: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
 });
-
-module.exports = Testimonial;

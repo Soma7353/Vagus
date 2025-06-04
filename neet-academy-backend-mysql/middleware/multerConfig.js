@@ -1,15 +1,17 @@
-// middleware/multerConfig.js
 const multer = require('multer');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // your upload folder
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
+// Configure multer to store files in memory as Buffer (for BLOB)
+const storage = multer.memoryStorage();
 
-const upload = multer({ storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Limit files to 10 MB
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept any file type (optional: you can restrict by mimetype here)
+    cb(null, true);
+  },
+});
 
 module.exports = upload;

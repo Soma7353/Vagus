@@ -2,15 +2,18 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Result = sequelize.define('Result', {
-  name: DataTypes.STRING,
-  rank: DataTypes.STRING,
-  college: DataTypes.STRING,
-  year: DataTypes.STRING,
-  color: DataTypes.STRING,
-
-  // Replace 'photo' string with actual image blob and mime type
-  photoBlob: DataTypes.BLOB('long'),
-  photoMimeType: DataTypes.STRING,
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  file: {
+    type: DataTypes.BLOB('long'),
+    allowNull: false
+  },
+  mimeType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
 });
 
 module.exports = Result;

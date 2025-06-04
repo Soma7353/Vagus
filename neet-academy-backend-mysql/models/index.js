@@ -1,5 +1,5 @@
 // models/index.js
-const sequelize = require('../config/database');
+const sequelize = require('../config/db');
 const { DataTypes } = require('sequelize');
 
 // Load all models

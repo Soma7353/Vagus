@@ -5,27 +5,32 @@ import { useNavigate } from 'react-router-dom';
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // clear previous error
+    setError('');
+    setLoading(true);
+
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/api/auth/login`,
         credentials,
-        { withCredentials: true } // include credentials if backend uses cookies/session
+        { withCredentials: true }
       );
 
       if (res.data.success) {
-        sessionStorage.setItem('isAdmin', 'true');
+        localStorage.setItem('admin_logged_in', 'true'); // fixed
         navigate('/admin');
       } else {
-        setError('Invalid credentials');
+        setError(res.data.message || 'Invalid credentials');
       }
     } catch (err) {
-      setError('Invalid credentials');
+      setError(err.response?.data?.message || 'Login failed');
       console.error('Login error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,8 +54,8 @@ const AdminLogin = () => {
           onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
           required
         />
-        <button className="btn w-full" type="submit">
-          Login
+        <button className="btn w-full" type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

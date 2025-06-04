@@ -11,21 +11,26 @@ const TestimonialAdmin = () => {
     videoUrl: '',
   });
 
-  const fetchTestimonials = async () => {
-    const res = await api.get('/api/testimonials');
-    setTestimonials(res.data);
-  };
-
   useEffect(() => {
     fetchTestimonials();
   }, []);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+  const fetchTestimonials = async () => {
+    try {
+      const res = await api.get('/api/testimonials');
+      setTestimonials(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch testimonials:', err);
+      alert('Could not load testimonials.');
+    }
   };
 
-  const handleSubmit = async e => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (form.id) {
@@ -37,6 +42,7 @@ const TestimonialAdmin = () => {
       resetForm();
     } catch (err) {
       console.error('Error submitting testimonial:', err);
+      alert('Failed to save testimonial.');
     }
   };
 
@@ -44,49 +50,91 @@ const TestimonialAdmin = () => {
     setForm({ id: null, name: '', college: '', message: '', videoUrl: '' });
   };
 
-  const handleEdit = item => {
+  const handleEdit = (item) => {
     setForm({ ...item });
   };
 
-  const handleDelete = async id => {
+  const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this testimonial?')) {
-      await api.delete(`/api/testimonials/${id}`);
-      fetchTestimonials();
+      try {
+        await api.delete(`/api/testimonials/${id}`);
+        fetchTestimonials();
+      } catch (err) {
+        console.error('Error deleting testimonial:', err);
+        alert('Failed to delete testimonial.');
+      }
     }
   };
 
   return (
-    <div className="border p-4 bg-white rounded shadow mb-8">
-      <h2 className="text-xl font-bold mb-4">Manage Testimonials</h2>
+    <div className="border p-6 bg-white rounded shadow mb-10">
+      <h2 className="text-xl font-semibold mb-4 text-blue-800">Manage Testimonials</h2>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <input name="name" value={form.name} onChange={handleChange} placeholder="Name" required className="input" />
-        <input name="college" value={form.college} onChange={handleChange} placeholder="College" required className="input" />
-        <textarea name="message" value={form.message} onChange={handleChange} placeholder="Message" className="input" />
-        <input name="videoUrl" value={form.videoUrl} onChange={handleChange} placeholder="YouTube Video URL" className="input" />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded col-span-1 md:col-span-2">
+        <input
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="Name"
+          required
+          className="border px-4 py-2 rounded"
+        />
+        <input
+          name="college"
+          value={form.college}
+          onChange={handleChange}
+          placeholder="College"
+          required
+          className="border px-4 py-2 rounded"
+        />
+        <textarea
+          name="message"
+          value={form.message}
+          onChange={handleChange}
+          placeholder="Message"
+          rows={3}
+          className="border px-4 py-2 rounded col-span-1 md:col-span-2"
+        />
+        <input
+          name="videoUrl"
+          value={form.videoUrl}
+          onChange={handleChange}
+          placeholder="YouTube Video URL"
+          className="border px-4 py-2 rounded col-span-1 md:col-span-2"
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded col-span-1 md:col-span-2"
+        >
           {form.id ? 'Update Testimonial' : 'Add Testimonial'}
         </button>
       </form>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {testimonials.map(item => (
-          <div key={item.id} className="border rounded p-3 shadow text-sm">
-            <iframe
-              src={item.videoUrl}
-              title={item.name}
-              className="w-full h-48 mb-2"
-              allowFullScreen
-            />
-            <h4 className="font-semibold">{item.name} – {item.college}</h4>
-            <p className="text-gray-600">{item.message}</p>
-            <div className="flex gap-3 mt-2">
-              <button onClick={() => handleEdit(item)} className="text-blue-600">Edit</button>
-              <button onClick={() => handleDelete(item.id)} className="text-red-600">Delete</button>
+      {testimonials.length === 0 ? (
+        <p className="text-gray-500 text-sm">No testimonials added yet.</p>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {testimonials.map((item) => (
+            <div key={item.id} className="border rounded p-3 shadow text-sm bg-gray-50">
+              <div className="aspect-video mb-2">
+                <iframe
+                  src={item.videoUrl}
+                  title={item.name}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full rounded"
+                />
+              </div>
+              <h4 className="font-semibold">{item.name} – {item.college}</h4>
+              <p className="text-gray-600 mt-1">{item.message}</p>
+              <div className="flex gap-4 mt-2">
+                <button onClick={() => handleEdit(item)} className="text-blue-600 hover:underline">Edit</button>
+                <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:underline">Delete</button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

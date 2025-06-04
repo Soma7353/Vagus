@@ -5,8 +5,6 @@ import { NextArrow, PrevArrow } from './BlueArrows';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
 const Results = () => {
   const [results, setResults] = useState([]);
   const [years, setYears] = useState([]);
@@ -16,7 +14,10 @@ const Results = () => {
   const fetchResults = async () => {
     try {
       const res = await api.get('/api/results');
-      const data = res.data;
+      const data = res.data.map((r) => ({
+        ...r,
+        photo: `data:image/jpeg;base64,${r.photo}`, // Convert base64
+      }));
       setResults(data);
       const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
       setYears(uniqueYears);
@@ -79,10 +80,11 @@ const Results = () => {
               >
                 <div className="relative w-40 h-40 mx-auto mb-4">
                   <img
-                    src={`${API_BASE_URL}${r.photo}`}
+                    src={r.photo}
                     alt={r.name}
                     className="w-40 h-40 object-cover rounded-full border-4 border-yellow-400"
                     onError={(e) => {
+                      e.target.onerror = null;
                       e.target.src = '/fallback.png';
                     }}
                   />
@@ -94,7 +96,6 @@ const Results = () => {
                 <p className="text-base font-bold bg-yellow-400 text-black inline-block px-3 py-1 rounded mt-2">
                   {r.college}
                 </p>
-                <p className="text-sm mt-1">{r.city}</p>
               </div>
             </div>
           ))}

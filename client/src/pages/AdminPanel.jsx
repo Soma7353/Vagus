@@ -24,11 +24,33 @@ const AdminPanel = () => {
         <TestimonialAdmin />
       </section>
 
+<nav className="mb-8 flex flex-wrap gap-4">
+  {['Results', 'Gallery', 'Testimonials', 'Downloads'].map((label) => (
+    <a href={`#${label.toLowerCase()}`} className="text-blue-600 underline" key={label}>
+      {label}
+    </a>
+  ))}
+</nav>
+
+
+      <button
+  onClick={() => {
+    localStorage.removeItem('admin_logged_in');
+    window.location.href = '/admin-login';
+  }}
+  className="bg-red-600 text-white px-4 py-2 rounded float-right mb-4"
+>
+  Logout
+</button>
+
+
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Downloads</h2>
         <DownloadAdmin />
       </section>
     </div>
+
+    
   );
 };
 

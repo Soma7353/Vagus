@@ -7,15 +7,25 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const Testimonials = () => {
   const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/api/testimonials').then((res) => {
-      const data = res.data.map((t) => ({
-        ...t,
-        videoUrl: convertToEmbed(t.videoUrl),
-      }));
-      setVideos(data);
-    });
+    const fetchTestimonials = async () => {
+      try {
+        const res = await api.get('/api/testimonials');
+        const data = res.data.map((t) => ({
+          ...t,
+          videoUrl: convertToEmbed(t.videoUrl),
+        }));
+        setVideos(data);
+      } catch (err) {
+        console.error('Failed to load testimonials:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
   }, []);
 
   const convertToEmbed = (url) => {
@@ -38,6 +48,16 @@ const Testimonials = () => {
       { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
+
+  if (loading) return <div className="text-center py-10">Loading testimonials...</div>;
+
+  if (videos.length === 0) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        No testimonials found.
+      </div>
+    );
+  }
 
   return (
     <section id="testimonials" className="py-16 bg-white">

@@ -16,14 +16,14 @@ const testimonialRoutes = require('./routes/testimonialRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const resultRoutes = require('./routes/resultRoutes');
-const authRoutes = require('./routes/authRoutes'); // ✅ Added
+const admin = require('./routes/authRoutes'); // ✅ Added
 
 // Route Mounting
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/downloads', downloadRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/results', resultRoutes);
-app.use('/api/auth', authRoutes); // ✅ Mount /api/auth routes
+app.use('/api/auth', admin); // ✅ Mount /api/auth routes
 
 // Default route
 app.get('/', (req, res) => {

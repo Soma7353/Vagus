@@ -15,7 +15,7 @@ const Testimonials = () => {
         const res = await api.get('/api/testimonials');
         const data = res.data.map((t) => ({
           ...t,
-          videoUrl: convertToEmbed(t.videoUrl),
+          videoUrl: convertToEmbed(t.video_link), // ✅ fix: use correct field name
         }));
         setVideos(data);
       } catch (err) {
@@ -29,6 +29,7 @@ const Testimonials = () => {
   }, []);
 
   const convertToEmbed = (url) => {
+    if (!url) return '';
     if (url.includes('youtu.be')) return url.replace('youtu.be/', 'www.youtube.com/embed/');
     if (url.includes('watch?v=')) return url.replace('watch?v=', 'embed/');
     return url;

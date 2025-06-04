@@ -1,3 +1,25 @@
+// routes/testimonialRoutes.js
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const upload = multer(); // for handling multipart/form-data
+
+const {
+  getAllTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+} = require('../controllers/testimonialController');
+
+router.get('/api/testimonials', getAllTestimonials);
+router.post('/api/testimonials', upload.none(), createTestimonial);
+router.put('/api/testimonials/:id', upload.none(), updateTestimonial);
+router.delete('/api/testimonials/:id', deleteTestimonial);
+
+module.exports = router;
+
+
+// controllers/testimonialController.js
 const testimonialModel = require('../models/testimonialModel');
 
 const getAllTestimonials = async (req, res) => {
@@ -11,7 +33,7 @@ const getAllTestimonials = async (req, res) => {
 };
 
 const createTestimonial = async (req, res) => {
-  const { name, iframe, year } = req.body;
+  const { name = '', iframe = '', year = '' } = req.body || {};
   try {
     await testimonialModel.createTestimonial({ name, iframe, year });
     res.status(201).json({ message: 'Testimonial created successfully' });
@@ -23,7 +45,7 @@ const createTestimonial = async (req, res) => {
 
 const updateTestimonial = async (req, res) => {
   const { id } = req.params;
-  const { name, iframe, year } = req.body;
+  const { name = '', iframe = '', year = '' } = req.body || {};
   try {
     await testimonialModel.updateTestimonial(id, { name, iframe, year });
     res.json({ message: 'Testimonial updated successfully' });

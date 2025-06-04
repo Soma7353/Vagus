@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../config/db');
 
 const GalleryImage = sequelize.define('GalleryImage', {
   title: {
@@ -13,7 +13,7 @@ const GalleryImage = sequelize.define('GalleryImage', {
   mimeType: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 });
 
 module.exports = GalleryImage;

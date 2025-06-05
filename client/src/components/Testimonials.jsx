@@ -9,48 +9,44 @@ const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* ---------- 1. Convert any YouTube URL to /embed/ form ---------- */
-  const convertToEmbed = useCallback((url = '') => {
-    if (!url.trim()) return '';
+  // ✅ Safe YouTube embed converter
+  const convertToEmbed = useCallback((url) => {
+    if (!url || typeof url !== 'string') return '';
+    const trimmed = url.trim();
+    if (!trimmed) return '';
 
     try {
-      const u = new URL(url.trim());
+      const u = new URL(trimmed);
 
-      /* youtu.be/ID  →  youtube.com/embed/ID */
       if (u.hostname === 'youtu.be') {
         return `https://www.youtube.com/embed${u.pathname}`;
       }
 
-      /* youtube.com/shorts/ID */
       if (u.pathname.startsWith('/shorts/')) {
         return `https://www.youtube.com/embed${u.pathname.replace('/shorts', '')}`;
       }
 
-      /* youtube.com/watch?v=ID */
       const id = u.searchParams.get('v');
       if (id) {
         return `https://www.youtube.com/embed/${id}`;
       }
 
-      /* already an /embed/ URL or something else => return as-is */
-      return url;
+      return trimmed; // fallback if already /embed/ or unknown pattern
     } catch (err) {
-      console.warn('Bad video_link:', url);
+      console.warn('Invalid video_link:', url);
       return '';
     }
   }, []);
 
-  /* ---------- 2. Fetch testimonials ---------- */
+  // ✅ Fetch testimonials and attach embedUrl
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
         const res = await api.get('/api/testimonials');
-
         const data = res.data.map((t) => ({
           ...t,
           embedUrl: convertToEmbed(t.video_link),
         }));
-
         setTestimonials(data);
       } catch (err) {
         console.error('Failed to load testimonials:', err);
@@ -62,7 +58,7 @@ const Testimonials = () => {
     fetchTestimonials();
   }, [convertToEmbed]);
 
-  /* ---------- 3. Slick-slider settings ---------- */
+  // ✅ Slider settings
   const slidesVisible = Math.min(3, testimonials.length || 1);
   const settings = {
     dots: true,
@@ -79,11 +75,12 @@ const Testimonials = () => {
     ],
   };
 
-  /* ---------- 4. UI ---------- */
+  // ✅ Loading state
   if (loading) {
     return <div className="text-center py-10">Loading testimonials...</div>;
   }
 
+  // ✅ No data fallback
   if (testimonials.length === 0) {
     return (
       <div className="text-center py-10 text-gray-500">

@@ -1,14 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const upload = require('../middleware/upload'); // ✅ multer middleware
-const downloadController = require('../controllers/downloadController');
+const express  = require('express');
+const router   = express.Router();
+const upload   = require('../middleware/upload');
+const ctrl     = require('../controllers/downloadController');
 
-router.get('/', downloadController.getAllDownloads);
-router.post('/', upload.single('file'), downloadController.createDownload);
-router.put('/:id', upload.single('file'), downloadController.updateDownload);
-router.delete('/:id', downloadController.deleteDownload);
-
-// ✅ Route to serve/download file from DB as attachment
-router.get('/download/:id', downloadController.downloadFile);
+router.get('/',          ctrl.getAllDownloads);
+router.get('/file/:id',  ctrl.downloadFile);              // stream / download
+router.post('/',         upload.single('file'), ctrl.createDownload);
+router.put('/:id',       upload.single('file'), ctrl.updateDownload);
+router.delete('/:id',    ctrl.deleteDownload);
 
 module.exports = router;

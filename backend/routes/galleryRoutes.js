@@ -1,15 +1,13 @@
-// routes/galleryRoutes.js
-const express          = require('express');
-const router           = express.Router();
-const upload           = require('../middleware/upload');   // memoryStorage
-const galleryCtrl      = require('../controllers/galleryController');
+const express = require('express');
+const router  = express.Router();
+const upload  = require('../middleware/upload');
+const ctrl    = require('../controllers/galleryController');
 
-router.get('/',                galleryCtrl.getAllGalleryItems);
-router.get('/image/:id',       galleryCtrl.getGalleryImage);      // <-- inline
-router.get('/download/:id',    galleryCtrl.downloadGalleryImage); // <-- attachment
-
-router.post('/',               upload.single('image'), galleryCtrl.createGalleryItem);
-router.put('/:id',             upload.single('image'), galleryCtrl.updateGalleryItem);
-router.delete('/:id',          galleryCtrl.deleteGalleryItem);
+router.get('/',                ctrl.getAllGalleryItems);
+router.get('/image/:id',       ctrl.getGalleryImage);        // inline <img src=…>
+router.get('/download/:id',    ctrl.downloadGalleryImage);   // attachment
+router.post('/',               upload.single('image'), ctrl.createGalleryItem);
+router.put('/:id',             upload.single('image'), ctrl.updateGalleryItem);
+router.delete('/:id',          ctrl.deleteGalleryItem);
 
 module.exports = router;

@@ -1,10 +1,12 @@
 const express = require('express');
-const router = express.Router();
-const resultController = require('../controllers/resultController');
+const router  = express.Router();
+const upload  = require('../middleware/upload');
+const ctrl    = require('../controllers/resultController');
 
-router.get('/', resultController.getAllResults);
-router.post('/', resultController.createResult);
-router.put('/:id', resultController.updateResult);
-router.delete('/:id', resultController.deleteResult);
+router.get('/',          ctrl.getAllResults);
+router.get('/file/:id',  ctrl.downloadResult);           // attachment
+router.post('/',         upload.single('file'), ctrl.createResult);
+router.put('/:id',       upload.single('file'), ctrl.updateResult);
+router.delete('/:id',    ctrl.deleteResult);
 
 module.exports = router;

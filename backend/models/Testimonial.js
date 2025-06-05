@@ -4,19 +4,19 @@ const sequelize = require('../config/db');
 const Testimonial = sequelize.define('Testimonial', {
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   message: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   video_link: {
-    type: DataTypes.STRING,
-    allowNull: true, // Optional video link
-  },
+    type: DataTypes.TEXT,
+    allowNull: true
+  }
 }, {
   tableName: 'testimonials',
-  timestamps: true,
+  timestamps: false
 });
 
 module.exports = Testimonial;

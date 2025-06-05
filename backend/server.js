@@ -2,7 +2,12 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
-const db = require('./config/db');
+
+// Sequelize DB connection
+const sequelize = require('./config/sequelize');
+sequelize.authenticate()
+  .then(() => console.log('Sequelize connected to MySQL'))
+  .catch(err => console.error('Sequelize connection error:', err));
 
 // Middleware
 app.use(express.json());
@@ -13,17 +18,17 @@ app.use(cors({
 
 // Route Imports
 const testimonialRoutes = require('./routes/testimonialRoutes');
-const downloadRoutes = require('./routes/downloadRoutes');
-const galleryRoutes = require('./routes/galleryRoutes');
-const resultRoutes = require('./routes/resultRoutes');
-const admin = require('./routes/admin'); // ✅ Added
+const downloadRoutes    = require('./routes/downloadRoutes');
+const galleryRoutes     = require('./routes/galleryRoutes');
+const resultRoutes      = require('./routes/resultRoutes');
+const adminRoutes       = require('./routes/admin');
 
 // Route Mounting
 app.use('/api/testimonials', testimonialRoutes);
-app.use('/api/downloads', downloadRoutes);
-app.use('/api/gallery', galleryRoutes);
-app.use('/api/results', resultRoutes);
-app.use('/api/auth', admin); // ✅ Mount /api/auth routes
+app.use('/api/downloads',    downloadRoutes);
+app.use('/api/gallery',      galleryRoutes);
+app.use('/api/results',      resultRoutes);
+app.use('/api/auth',         adminRoutes);
 
 // Default route
 app.get('/', (req, res) => {

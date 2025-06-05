@@ -1,29 +1,69 @@
-const galleryModel = require('../models/galleryModel');
+const path = require('path');
+const GalleryImage = require('../models/GalleryImage');
 
-const getAllGalleryItems = async (req, res) => {
+// GET all gallery items
+exports.getAllGalleryItems = async (_req, res) => {
   try {
-    const gallery = await galleryModel.getAllGalleryItems();
-    res.json(gallery);
+    const items = await GalleryImage.findAll({ attributes: ['id', 'title'] });
+    res.json(items);
   } catch (err) {
-    console.error('Error fetching gallery:', err);
+    console.error('Error fetching gallery items:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-const createGalleryItem = async (req, res) => {
-  const { title } = req.body;
-  const file = req.file;
-
-  if (!file) {
-    return res.status(400).json({ error: 'No image file uploaded' });
-  }
-
+// GET single image inline
+exports.getGalleryImage = async (req, res) => {
   try {
-    await galleryModel.createGalleryItem({
+    const { id } = req.params;
+    const item = await GalleryImage.findByPk(id);
+
+    if (!item) return res.status(404).send('Not found');
+
+    res.setHeader('Content-Type', item.image_type);
+    res.send(item.image);
+  } catch (err) {
+    console.error('Error serving image:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// GET image as download
+exports.downloadGalleryImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await GalleryImage.findByPk(id);
+
+    if (!item) return res.status(404).send('Not found');
+
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${item.title}${path.extname(item.image_type)}"`
+    );
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.send(item.image);
+  } catch (err) {
+    console.error('Error downloading image:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// POST create gallery item
+exports.createGalleryItem = async (req, res) => {
+  try {
+    const { title } = req.body;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ error: 'Image file is required' });
+    }
+
+    await GalleryImage.create({
       title,
       image: file.buffer,
-      image_type: file.mimetype,
+      image_type: file.mimetype
     });
+
     res.status(201).json({ message: 'Gallery item created successfully' });
   } catch (err) {
     console.error('Error creating gallery item:', err);
@@ -31,21 +71,23 @@ const createGalleryItem = async (req, res) => {
   }
 };
 
-const updateGalleryItem = async (req, res) => {
-  const { id } = req.params;
-  const { title } = req.body;
-  const file = req.file;
-
+// PUT update gallery item
+exports.updateGalleryItem = async (req, res) => {
   try {
-    const existing = await galleryModel.getGalleryItemById(id);
-    if (!existing) return res.status(404).json({ error: 'Gallery item not found' });
+    const { id } = req.params;
+    const { title } = req.body;
+    const file = req.file;
 
-    await galleryModel.updateGalleryItem(id, {
-      title,
-      image: file ? file.buffer : existing.image,
-      image_type: file ? file.mimetype : existing.image_type,
-    });
+    const item = await GalleryImage.findByPk(id);
+    if (!item) return res.status(404).send('Not found');
 
+    item.title = title || item.title;
+    if (file) {
+      item.image = file.buffer;
+      item.image_type = file.mimetype;
+    }
+
+    await item.save();
     res.json({ message: 'Gallery item updated successfully' });
   } catch (err) {
     console.error('Error updating gallery item:', err);
@@ -53,51 +95,17 @@ const updateGalleryItem = async (req, res) => {
   }
 };
 
-const deleteGalleryItem = async (req, res) => {
-  const { id } = req.params;
+// DELETE gallery item
+exports.deleteGalleryItem = async (req, res) => {
   try {
-    await galleryModel.deleteGalleryItem(id);
+    const { id } = req.params;
+    const deleted = await GalleryImage.destroy({ where: { id } });
+
+    if (!deleted) return res.status(404).send('Not found');
+
     res.json({ message: 'Gallery item deleted successfully' });
   } catch (err) {
     console.error('Error deleting gallery item:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-};
-
-const getGalleryImage = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const item = await galleryModel.getGalleryItemById(id);
-    if (!item || !item.image) return res.status(404).json({ error: 'Image not found' });
-
-    res.set('Content-Type', item.image_type);
-    res.send(item.image);
-  } catch (err) {
-    console.error('Error fetching gallery image:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-const downloadGalleryImage = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const item = await galleryModel.getGalleryItemById(id);
-    if (!item || !item.image) return res.status(404).json({ error: 'Image not found' });
-
-    res.set('Content-Type', item.image_type);
-    res.set('Content-Disposition', `attachment; filename="${item.title.replace(/[^a-z0-9]/gi, '_')}.jpg"`);
-    res.send(item.image);
-  } catch (err) {
-    console.error('Error downloading gallery image:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-module.exports = {
-  getAllGalleryItems,
-  createGalleryItem,
-  updateGalleryItem,
-  deleteGalleryItem,
-  getGalleryImage,
-  downloadGalleryImage,
 };

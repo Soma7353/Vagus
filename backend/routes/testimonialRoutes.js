@@ -1,10 +1,11 @@
 const express = require('express');
-const router = express.Router();
-const testimonialController = require('../controllers/testimonialController');
+const router  = express.Router();
+const ctrl    = require('../controllers/testimonialController');
 
-router.get('/', testimonialController.getAllTestimonials);
-router.post('/', testimonialController.createTestimonial);
-router.put('/:id', testimonialController.updateTestimonial);
-router.delete('/:id', testimonialController.deleteTestimonial);
+// No file uploads here
+router.get('/',      ctrl.getAllTestimonials);
+router.post('/',     ctrl.createTestimonial);
+router.put('/:id',   ctrl.updateTestimonial);
+router.delete('/:id',ctrl.deleteTestimonial);
 
 module.exports = router;

@@ -1,6 +1,5 @@
-// src/components/admin/ResultAdmin.jsx
 import React, { useEffect, useState } from 'react';
-import api from '../../api';                // axios instance with baseURL
+import api from '../../api';
 
 const ResultAdmin = () => {
   const [results, setResults] = useState([]);
@@ -10,10 +9,9 @@ const ResultAdmin = () => {
     rank: '',
     college: '',
     year: '',
-    image: null,          // 👈 renamed from file → image
+    image: null,
   });
 
-  /* ─────────────────────────────────── LOAD DATA ─────────────────────────────────── */
   useEffect(() => {
     fetchResults();
   }, []);
@@ -28,7 +26,6 @@ const ResultAdmin = () => {
     }
   };
 
-  /* ─────────────────────────────────── FORM HANDLERS ─────────────────────────────────── */
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setForm((prev) => ({
@@ -40,18 +37,18 @@ const ResultAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const fd = new FormData();
-    fd.append('name', form.name);
-    fd.append('rank', form.rank);
-    fd.append('college', form.college);
-    fd.append('year', form.year);
-    if (form.image) fd.append('image', form.image);   // 👈 use image
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('rank', form.rank);
+    formData.append('college', form.college);
+    formData.append('year', form.year);
+    if (form.image) formData.append('image', form.image);
 
     try {
       if (form.id) {
-        await api.put(`/api/results/${form.id}`, fd);
+        await api.put(`/api/results/${form.id}`, formData);
       } else {
-        await api.post('/api/results', fd);
+        await api.post('/api/results', formData);
       }
       fetchResults();
       resetForm();
@@ -62,7 +59,14 @@ const ResultAdmin = () => {
   };
 
   const resetForm = () => {
-    setForm({ id: null, name: '', rank: '', college: '', year: '', image: null });
+    setForm({
+      id: null,
+      name: '',
+      rank: '',
+      college: '',
+      year: '',
+      image: null,
+    });
   };
 
   const handleEdit = (item) => {
@@ -72,12 +76,12 @@ const ResultAdmin = () => {
       rank: item.rank,
       college: item.college,
       year: item.year,
-      image: null, // new file must be chosen
+      image: null,
     });
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Delete this result?')) {
+    if (window.confirm('Are you sure you want to delete this result?')) {
       try {
         await api.delete(`/api/results/${id}`);
         fetchResults();
@@ -88,12 +92,10 @@ const ResultAdmin = () => {
     }
   };
 
-  /* ─────────────────────────────────── RENDER ─────────────────────────────────── */
   return (
     <div className="border p-6 bg-white rounded shadow mb-10">
       <h2 className="text-xl font-semibold mb-4 text-blue-800">Manage Results</h2>
 
-      {/* ── FORM ── */}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <input
           name="name"
@@ -129,7 +131,7 @@ const ResultAdmin = () => {
         />
         <input
           type="file"
-          name="image"                 // 👈 must be image
+          name="image"
           accept="image/*"
           onChange={handleChange}
           className="border px-4 py-2 rounded"
@@ -142,29 +144,30 @@ const ResultAdmin = () => {
         </button>
       </form>
 
-      {/* ── LIST ── */}
       <ul className="space-y-3">
-        {results.map((r) => (
-          <li key={r.id} className="flex justify-between items-center bg-gray-100 p-3 rounded">
+        {results.map((result) => (
+          <li key={result.id} className="flex justify-between items-center bg-gray-100 p-3 rounded">
             <div>
-              <p className="font-medium">{r.name} — Rank {r.rank}</p>
+              <p className="font-medium">
+                {result.name} - Rank {result.rank}
+              </p>
               <p className="text-sm text-gray-600">
-                {r.college} ({r.year})
+                {result.college} ({result.year})
               </p>
             </div>
             <div className="flex gap-3">
               <a
-                href={`/api/results/${r.id}/image`} // 👈 matches routes
+                href={`/api/results/${result.id}/image`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-700 underline"
               >
                 View Photo
               </a>
-              <button onClick={() => handleEdit(r)} className="text-blue-600 hover:underline">
+              <button onClick={() => handleEdit(result)} className="text-blue-600 hover:underline">
                 Edit
               </button>
-              <button onClick={() => handleDelete(r.id)} className="text-red-600 hover:underline">
+              <button onClick={() => handleDelete(result.id)} className="text-red-600 hover:underline">
                 Delete
               </button>
             </div>

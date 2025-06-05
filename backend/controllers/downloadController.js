@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const downloadModel = require('../models/downloadModel');
 
 const getAllDownloads = async (req, res) => {
@@ -11,9 +13,22 @@ const getAllDownloads = async (req, res) => {
 };
 
 const createDownload = async (req, res) => {
-  const { name, file } = req.body;
   try {
-    await downloadModel.createDownload({ name, file });
+    const { title } = req.body;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ error: 'File is required' });
+    }
+
+    const file_type = path.extname(file.originalname).toLowerCase();
+
+    await downloadModel.createDownload({
+      title,
+      file: file.filename,
+      file_type,
+    });
+
     res.status(201).json({ message: 'Download file created successfully' });
   } catch (err) {
     console.error('Error creating download:', err);
@@ -22,10 +37,36 @@ const createDownload = async (req, res) => {
 };
 
 const updateDownload = async (req, res) => {
-  const { id } = req.params;
-  const { name, file } = req.body;
   try {
-    await downloadModel.updateDownload(id, { name, file });
+    const { id } = req.params;
+    const { title } = req.body;
+    const file = req.file;
+
+    const existing = await downloadModel.getDownloadById(id);
+    if (!existing) {
+      return res.status(404).json({ error: 'Download not found' });
+    }
+
+    let newFile = existing.file;
+    let file_type = existing.file_type;
+
+    if (file) {
+      // Delete old file
+      const oldPath = path.join(__dirname, '../uploads', existing.file);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+
+      newFile = file.filename;
+      file_type = path.extname(file.originalname).toLowerCase();
+    }
+
+    await downloadModel.updateDownload(id, {
+      title,
+      file: newFile,
+      file_type,
+    });
+
     res.json({ message: 'Download file updated successfully' });
   } catch (err) {
     console.error('Error updating download:', err);
@@ -34,8 +75,19 @@ const updateDownload = async (req, res) => {
 };
 
 const deleteDownload = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
+
+    const existing = await downloadModel.getDownloadById(id);
+    if (!existing) {
+      return res.status(404).json({ error: 'Download not found' });
+    }
+
+    const filePath = path.join(__dirname, '../uploads', existing.file);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
     await downloadModel.deleteDownload(id);
     res.json({ message: 'Download file deleted successfully' });
   } catch (err) {

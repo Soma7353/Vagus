@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import api from '../api';
+import api from '../api'; // axios instance
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
@@ -11,12 +13,7 @@ const Gallery = () => {
   const fetchGallery = async () => {
     try {
       const res = await api.get('/api/gallery');
-      const processed = res.data.map((img) => ({
-        id: img.id,
-        title: img.title || '',
-        base64Image: `data:image/jpeg;base64,${img.image}`,
-      }));
-      setImages(processed);
+      setImages(res.data || []);
     } catch (err) {
       console.error('Gallery load error:', err);
     } finally {
@@ -62,12 +59,12 @@ const Gallery = () => {
             <div key={img.id} className="p-2">
               <div className="overflow-hidden rounded shadow">
                 <img
-                  src={img.base64Image}
+                  src={`${API_BASE}/api/gallery/image/${img.id}`}
                   alt={img.title || 'Gallery Image'}
                   className="w-full h-64 object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = '/fallback.png';
+                    e.target.src = '/fallback.png'; // fallback image path in public/
                   }}
                 />
               </div>

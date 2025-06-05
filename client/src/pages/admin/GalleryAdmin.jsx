@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../api';
+import api from '../../api'; // axios instance
+
+const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 
 const GalleryAdmin = () => {
   const [gallery, setGallery] = useState([]);
@@ -22,7 +24,7 @@ const GalleryAdmin = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    const file = files ? files[0] : null;
+    const file = files?.[0] || null;
 
     setForm((prev) => ({
       ...prev,
@@ -61,7 +63,7 @@ const GalleryAdmin = () => {
 
   const handleEdit = (item) => {
     setForm({ id: item.id, title: item.title, image: null });
-    setPreview(null); // don't show previous preview
+    setPreview(`${API_BASE}/api/gallery/image/${item.id}`);
   };
 
   const handleDelete = async (id) => {
@@ -113,7 +115,7 @@ const GalleryAdmin = () => {
         {gallery.map((item) => (
           <div key={item.id} className="bg-gray-100 rounded shadow p-3 relative">
             <img
-              src={`/api/gallery/${item.id}/image`} // adjust if you need blob serving route
+              src={`${API_BASE}/api/gallery/image/${item.id}`}
               alt={item.title}
               className="w-full h-40 object-cover rounded"
             />

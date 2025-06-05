@@ -8,7 +8,7 @@ const TestimonialAdmin = () => {
     name: '',
     college: '',
     message: '',
-    videoUrl: '',
+    video_link: '', // FIXED key name to match backend
   });
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const TestimonialAdmin = () => {
   };
 
   const resetForm = () => {
-    setForm({ id: null, name: '', college: '', message: '', videoUrl: '' });
+    setForm({ id: null, name: '', college: '', message: '', video_link: '' });
   };
 
   const handleEdit = (item) => {
@@ -96,8 +96,8 @@ const TestimonialAdmin = () => {
           className="border px-4 py-2 rounded col-span-1 md:col-span-2"
         />
         <input
-          name="videoUrl"
-          value={form.videoUrl}
+          name="video_link" // FIXED key name to match backend
+          value={form.video_link}
           onChange={handleChange}
           placeholder="YouTube Video URL"
           className="border px-4 py-2 rounded col-span-1 md:col-span-2"
@@ -118,7 +118,7 @@ const TestimonialAdmin = () => {
             <div key={item.id} className="border rounded p-3 shadow text-sm bg-gray-50">
               <div className="aspect-video mb-2">
                 <iframe
-                  src={item.videoUrl}
+                  src={item.video_link || ''}
                   title={item.name}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

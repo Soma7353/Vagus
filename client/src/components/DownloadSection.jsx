@@ -1,6 +1,6 @@
 // src/components/DownloadSection.jsx
 import React, { useEffect, useState } from 'react';
-import api from '../api';                     // ← your pre-configured Axios instance
+import api from '../api'; // pre-configured Axios instance
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL; // e.g. "https://vagus-1.onrender.com"
 
@@ -11,7 +11,6 @@ const DownloadSection = () => {
   useEffect(() => {
     const fetchDownloads = async () => {
       try {
-        // api already has baseURL, so path is enough
         const res = await api.get('/api/downloads');
         setDownloads(res.data || []);
       } catch (err) {
@@ -24,7 +23,6 @@ const DownloadSection = () => {
     fetchDownloads();
   }, []);
 
-  // Warn if env var missing (helps in dev / Docker)
   if (!API_BASE_URL) {
     return (
       <div className="text-center text-red-600 py-10">
@@ -53,9 +51,9 @@ const DownloadSection = () => {
               >
                 <span className="text-gray-800 font-medium">{doc.title}</span>
 
-                {/* 🔥 NEW: stream BLOB from /download/:id */}
+                {/* 🔥 Corrected endpoint */}
                 <a
-                  href={`${API_BASE_URL}/api/downloads/download/${doc.id}`}
+                  href={`${API_BASE_URL}/api/downloads/file/${doc.id}`}
                   className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
                 >
                   Download

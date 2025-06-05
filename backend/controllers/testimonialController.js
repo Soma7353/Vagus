@@ -1,6 +1,6 @@
-// backend/controllers/testimonialController.js
 const testimonialModel = require('../models/testimonialModel');
 
+// GET all testimonials
 const getAllTestimonials = async (req, res) => {
   try {
     const testimonials = await testimonialModel.getAllTestimonials();
@@ -11,10 +11,11 @@ const getAllTestimonials = async (req, res) => {
   }
 };
 
+// POST create a new testimonial
 const createTestimonial = async (req, res) => {
-  const { name = '', iframe = '', message = '', college = '', year = '' } = req.body;
+  const { name, iframe, college, year, message } = req.body;
   try {
-    await testimonialModel.createTestimonial({ name, iframe, message, college, year });
+    await testimonialModel.createTestimonial({ name, iframe, college, year, message });
     res.status(201).json({ message: 'Testimonial created successfully' });
   } catch (err) {
     console.error('Error creating testimonial:', err);
@@ -22,11 +23,12 @@ const createTestimonial = async (req, res) => {
   }
 };
 
+// PUT update a testimonial
 const updateTestimonial = async (req, res) => {
   const { id } = req.params;
-  const { name = '', iframe = '', message = '', college = '', year = '' } = req.body;
+  const { name, iframe, college, year, message } = req.body;
   try {
-    await testimonialModel.updateTestimonial(id, { name, iframe, message, college, year });
+    await testimonialModel.updateTestimonial(id, { name, iframe, college, year, message });
     res.json({ message: 'Testimonial updated successfully' });
   } catch (err) {
     console.error('Error updating testimonial:', err);
@@ -34,6 +36,7 @@ const updateTestimonial = async (req, res) => {
   }
 };
 
+// DELETE a testimonial
 const deleteTestimonial = async (req, res) => {
   const { id } = req.params;
   try {

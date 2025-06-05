@@ -3,16 +3,24 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
 const Result = sequelize.define('Result', {
-  title: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  file: {
+  college: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  rank: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  year: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  image: {
     type: DataTypes.BLOB('long'),
-    allowNull: false
-  },
-  file_type: {
-    type: DataTypes.STRING,
     allowNull: false
   }
 }, {

@@ -1,18 +1,10 @@
 const multer = require('multer');
 const path = require('path');
 
-// Set up file storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // save to uploads/ folder
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + '_' + file.originalname;
-    cb(null, uniqueName);
-  }
-});
+// Memory storage for BLOB upload
+const storage = multer.memoryStorage();
 
-// Only allow document types (optional)
+// Only allow specific file types
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /pdf|doc|docx/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -23,7 +15,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Export multer instance
+// Multer instance
 const upload = multer({ storage, fileFilter });
 
 module.exports = upload;

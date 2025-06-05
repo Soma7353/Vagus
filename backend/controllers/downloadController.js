@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const downloadModel = require('../models/downloadModel');
 
 const getAllDownloads = async (req, res) => {
@@ -25,7 +24,7 @@ const createDownload = async (req, res) => {
 
     await downloadModel.createDownload({
       title,
-      file: file.filename,
+      file: file.buffer, // Use buffer instead of filename
       file_type,
     });
 
@@ -47,26 +46,13 @@ const updateDownload = async (req, res) => {
       return res.status(404).json({ error: 'Download not found' });
     }
 
-    let newFile = existing.file;
-    let file_type = existing.file_type;
-
-    if (file) {
-      // Delete old file
-      const oldPath = path.join(__dirname, '../uploads', existing.file);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
-
-      newFile = file.filename;
-      file_type = path.extname(file.originalname).toLowerCase();
-    }
-
-    await downloadModel.updateDownload(id, {
+    const fileData = {
       title,
-      file: newFile,
-      file_type,
-    });
+      file: file ? file.buffer : existing.file,
+      file_type: file ? path.extname(file.originalname).toLowerCase() : existing.file_type
+    };
 
+    await downloadModel.updateDownload(id, fileData);
     res.json({ message: 'Download file updated successfully' });
   } catch (err) {
     console.error('Error updating download:', err);
@@ -83,15 +69,29 @@ const deleteDownload = async (req, res) => {
       return res.status(404).json({ error: 'Download not found' });
     }
 
-    const filePath = path.join(__dirname, '../uploads', existing.file);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-
     await downloadModel.deleteDownload(id);
     res.json({ message: 'Download file deleted successfully' });
   } catch (err) {
     console.error('Error deleting download:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Optional: To serve file from DB
+const downloadFile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const file = await downloadModel.getDownloadById(id);
+
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    res.setHeader('Content-Disposition', `attachment; filename="${file.title}${file.file_type}"`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.send(file.file);
+  } catch (err) {
+    console.error('Error sending file:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -101,4 +101,5 @@ module.exports = {
   createDownload,
   updateDownload,
   deleteDownload,
+  downloadFile, // Export if you use it in routes
 };

@@ -1,100 +1,46 @@
-// controllers/galleryController.js
-const path         = require('path');
-const galleryModel = require('../models/galleryModel');
+// controllers/testimonialController.js
+const Testimonial = require('../models/Testimonial');
 
-/* GET /api/gallery */
-exports.getAllGalleryItems = async (_req, res) => {
+exports.getAllTestimonials = async (req, res) => {
   try {
-    const items = await galleryModel.getAllGalleryItems();
-    res.json(items);
+    const [rows] = await Testimonial.getAll();
+    res.json(rows);
   } catch (err) {
-    console.error('Gallery fetch error:', err);
+    console.error('Error getting testimonials:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-/* GET /api/gallery/image/:id  – serve inline thumbnail/full-size */
-exports.getGalleryImage = async (req, res) => {
+exports.createTestimonial = async (req, res) => {
+  try {
+    const { name, message, video_link } = req.body;
+    await Testimonial.create({ name, message, video_link });
+    res.status(201).json({ message: 'Testimonial created' });
+  } catch (err) {
+    console.error('Error creating testimonial:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.updateTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
-    const item   = await galleryModel.getGalleryItemById(id);
-    if (!item) return res.status(404).send('Not found');
-
-    res.setHeader('Content-Type', item.image_type);
-    res.send(Buffer.from(item.image));
+    const { name, message, video_link } = req.body;
+    await Testimonial.update(id, { name, message, video_link });
+    res.json({ message: 'Testimonial updated' });
   } catch (err) {
-    console.error('Image send error:', err);
+    console.error('Error updating testimonial:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-/* GET /api/gallery/download/:id  – force download */
-exports.downloadGalleryImage = async (req, res) => {
+exports.deleteTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
-    const item   = await galleryModel.getGalleryItemById(id);
-    if (!item) return res.status(404).send('Not found');
-
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${item.title}${path.extname(item.image_type)}"`);
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.send(Buffer.from(item.image));
+    await Testimonial.delete(id);
+    res.json({ message: 'Testimonial deleted' });
   } catch (err) {
-    console.error('Image download error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-/* POST /api/gallery */
-exports.createGalleryItem = async (req, res) => {
-  try {
-    const { title } = req.body;
-    if (!req.file) return res.status(400).json({ error: 'Image required' });
-
-    await galleryModel.createGalleryItem({
-      title,
-      image: req.file.buffer,
-      image_type: req.file.mimetype,
-    });
-    res.status(201).json({ message: 'Gallery item created' });
-  } catch (err) {
-    console.error('Gallery create error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-/* PUT /api/gallery/:id */
-exports.updateGalleryItem = async (req, res) => {
-  try {
-    const { id }   = req.params;
-    const { title }= req.body;
-    const item     = await galleryModel.getGalleryItemById(id);
-    if (!item) return res.status(404).send('Not found');
-
-    await galleryModel.updateGalleryItem(id, {
-      title,
-      image      : req.file ? req.file.buffer   : item.image,
-      image_type : req.file ? req.file.mimetype : item.image_type,
-    });
-    res.json({ message: 'Gallery item updated' });
-  } catch (err) {
-    console.error('Gallery update error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-/* DELETE /api/gallery/:id */
-exports.deleteGalleryItem = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item   = await galleryModel.getGalleryItemById(id);
-    if (!item) return res.status(404).send('Not found');
-
-    await galleryModel.deleteGalleryItem(id);
-    res.json({ message: 'Gallery item deleted' });
-  } catch (err) {
-    console.error('Gallery delete error:', err);
+    console.error('Error deleting testimonial:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };

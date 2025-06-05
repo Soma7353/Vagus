@@ -1,10 +1,9 @@
-// controllers/testimonialController.js
 const Testimonial = require('../models/testimonialModel');
 
 exports.getAllTestimonials = async (req, res) => {
   try {
-    const [rows] = await Testimonial.getAll();
-    res.json(rows);
+    const testimonials = await Testimonial.findAll();
+    res.json(testimonials);
   } catch (err) {
     console.error('Error getting testimonials:', err);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -26,7 +25,10 @@ exports.updateTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, message, video_link } = req.body;
-    await Testimonial.update(id, { name, message, video_link });
+    const testimonial = await Testimonial.findByPk(id);
+    if (!testimonial) return res.status(404).json({ error: 'Testimonial not found' });
+
+    await testimonial.update({ name, message, video_link });
     res.json({ message: 'Testimonial updated' });
   } catch (err) {
     console.error('Error updating testimonial:', err);
@@ -37,7 +39,10 @@ exports.updateTestimonial = async (req, res) => {
 exports.deleteTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
-    await Testimonial.delete(id);
+    const testimonial = await Testimonial.findByPk(id);
+    if (!testimonial) return res.status(404).json({ error: 'Testimonial not found' });
+
+    await testimonial.destroy();
     res.json({ message: 'Testimonial deleted' });
   } catch (err) {
     console.error('Error deleting testimonial:', err);

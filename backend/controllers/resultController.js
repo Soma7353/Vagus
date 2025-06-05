@@ -1,91 +1,99 @@
-const path = require('path');
+// controllers/resultController.js
 const Result = require('../models/Result');
 
-// GET all results
-exports.getAllResults = async (_req, res) => {
+// Get all results (excluding image blob)
+exports.getAllResults = async (req, res) => {
   try {
-    const items = await Result.findAll({ attributes: ['id', 'title'] });
-    res.json(items);
-  } catch (err) {
-    console.error('Error fetching results:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-// GET result file (force download)
-exports.downloadResult = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await Result.findByPk(id);
-    if (!item) return res.status(404).send('Result not found');
-
-    res.setHeader('Content-Disposition', `attachment; filename="${item.title}${item.file_type}"`);
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.send(item.file);
-  } catch (err) {
-    console.error('Error downloading result:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-// POST create new result
-exports.createResult = async (req, res) => {
-  try {
-    const { title } = req.body;
-    const file = req.file;
-
-    if (!file) return res.status(400).json({ error: 'File is required' });
-
-    const file_type = path.extname(file.originalname).toLowerCase();
-
-    await Result.create({
-      title,
-      file: file.buffer,
-      file_type
+    const results = await Result.findAll({
+      attributes: ['id', 'name', 'college', 'rank', 'year']
     });
-
-    res.status(201).json({ message: 'Result created successfully' });
+    res.json(results);
   } catch (err) {
-    console.error('Error creating result:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Failed to fetch results:', err);
+    res.status(500).json({ error: 'Server error while fetching results' });
   }
 };
 
-// PUT update result
-exports.updateResult = async (req, res) => {
+// Get image by ID
+exports.getResultImage = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title } = req.body;
-    const file = req.file;
-
-    const item = await Result.findByPk(id);
-    if (!item) return res.status(404).json({ error: 'Result not found' });
-
-    item.title = title || item.title;
-    if (file) {
-      item.file = file.buffer;
-      item.file_type = path.extname(file.originalname).toLowerCase();
+    const result = await Result.findByPk(req.params.id);
+    if (!result || !result.image) {
+      return res.status(404).json({ error: 'Image not found' });
     }
 
-    await item.save();
-    res.json({ message: 'Result updated successfully' });
+    res.set('Content-Type', 'image/jpeg'); // Change if needed
+    res.send(result.image);
   } catch (err) {
-    console.error('Error updating result:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error fetching result image:', err);
+    res.status(500).json({ error: 'Failed to fetch result image' });
   }
 };
 
-// DELETE result
+// Create new result
+exports.createResult = async (req, res) => {
+  try {
+    const { name, college, rank, year } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file required' });
+    }
+
+    const result = await Result.create({
+      name,
+      college,
+      rank,
+      year,
+      image: req.file.buffer
+    });
+
+    res.status(201).json(result);
+  } catch (err) {
+    console.error('Error creating result:', err);
+    res.status(500).json({ error: 'Failed to create result' });
+  }
+};
+
+// Update result
+exports.updateResult = async (req, res) => {
+  try {
+    const result = await Result.findByPk(req.params.id);
+    if (!result) {
+      return res.status(404).json({ error: 'Result not found' });
+    }
+
+    const { name, college, rank, year } = req.body;
+
+    result.name = name;
+    result.college = college;
+    result.rank = rank;
+    result.year = year;
+
+    if (req.file) {
+      result.image = req.file.buffer;
+    }
+
+    await result.save();
+
+    res.json({ message: 'Result updated' });
+  } catch (err) {
+    console.error('Error updating result:', err);
+    res.status(500).json({ error: 'Failed to update result' });
+  }
+};
+
+// Delete result
 exports.deleteResult = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Result.destroy({ where: { id } });
+    const result = await Result.findByPk(req.params.id);
+    if (!result) {
+      return res.status(404).json({ error: 'Result not found' });
+    }
 
-    if (!deleted) return res.status(404).send('Not found');
-
-    res.json({ message: 'Result deleted successfully' });
+    await result.destroy();
+    res.json({ message: 'Result deleted' });
   } catch (err) {
     console.error('Error deleting result:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Failed to delete result' });
   }
 };

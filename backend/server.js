@@ -4,7 +4,7 @@ require('dotenv').config();
 const app = express();
 
 // Sequelize DB connection
-const sequelize = require('./config/sequelize');
+const sequelize = require('./config/db');
 sequelize.authenticate()
   .then(() => console.log('Sequelize connected to MySQL'))
   .catch(err => console.error('Sequelize connection error:', err));

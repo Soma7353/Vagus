@@ -16,7 +16,7 @@ const Results = () => {
       const res = await api.get('/api/results');
       const data = res.data.map((r) => ({
         ...r,
-        photo: `data:image/jpeg;base64,${r.photo}`, // Convert base64
+        photo: `/api/results/${r.id}/image`,
       }));
       setResults(data);
       const uniqueYears = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
@@ -74,10 +74,7 @@ const Results = () => {
         <Slider {...settings}>
           {filtered.map((r) => (
             <div key={r.id} className="p-2">
-              <div
-                className="rounded-xl text-center text-black p-4 shadow-lg relative"
-                style={{ backgroundColor: '#f2f3f4' }}
-              >
+              <div className="rounded-xl text-center text-black p-4 shadow-lg bg-gray-100">
                 <div className="relative w-40 h-40 mx-auto mb-4">
                   <img
                     src={r.photo}
@@ -88,14 +85,12 @@ const Results = () => {
                       e.target.src = '/fallback.png';
                     }}
                   />
-                  <div className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md border-2 border-white">
-                    {r.score} / 720
-                  </div>
                 </div>
                 <h4 className="text-lg font-bold uppercase">{r.name}</h4>
                 <p className="text-base font-bold bg-yellow-400 text-black inline-block px-3 py-1 rounded mt-2">
                   {r.college}
                 </p>
+                <p className="text-sm text-gray-600">Rank: {r.rank}</p>
               </div>
             </div>
           ))}

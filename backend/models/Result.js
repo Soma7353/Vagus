@@ -1,4 +1,3 @@
-// models/Result.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
@@ -22,6 +21,11 @@ const Result = sequelize.define('Result', {
   image: {
     type: DataTypes.BLOB('long'),
     allowNull: false
+  },
+  image_type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'image/jpeg'
   }
 }, {
   tableName: 'results',

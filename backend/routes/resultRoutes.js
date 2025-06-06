@@ -1,10 +1,9 @@
-// routes/resultRoutes.js
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
 const resultController = require('../controllers/resultController');
 
-// Use memory storage for storing file in buffer
+// Store uploaded files in memory (Buffer)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -16,3 +15,4 @@ router.put('/:id', upload.single('image'), resultController.updateResult);
 router.delete('/:id', resultController.deleteResult);
 
 module.exports = router;
+

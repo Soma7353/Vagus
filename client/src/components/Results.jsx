@@ -1,38 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import api from '../api';                // axios with baseURL
+import api from '../api'; // Axios instance
 import { NextArrow, PrevArrow } from './BlueArrows';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const Results = () => {
-  const [items, setItems]       = useState([]);
-  const [years, setYears]       = useState([]);
+  const [items, setItems] = useState([]);
+  const [years, setYears] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [loading, setLoading]   = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  /* ─── Fetch once ─── */
   useEffect(() => {
     (async () => {
       try {
-        const res  = await api.get('/api/results');
-        const data = res.data.map(r => ({
+        const res = await api.get('/api/results');
+        const data = (res.data || []).map(r => ({
           ...r,
-          photoUrl: `/api/results/${r.id}/image`,   // endpoint for <img>
+          photoUrl: `/api/results/${r.id}/image`,
         }));
+
         setItems(data);
+
         const ys = [...new Set(data.map(r => r.year))].sort((a, b) => b - a);
         setYears(ys);
-        setSelected(ys[0] || null);
+        setSelected(ys[0] ?? null);
       } catch (err) {
-        console.error('Fetch results failed:', err);
+        console.error('Failed to load results:', err);
       } finally {
         setLoading(false);
       }
     })();
   }, []);
 
-  const show = items.filter(i => i.year === selected);
+  const show = selected ? items.filter(i => i.year === selected) : [];
 
   const slick = {
     dots: false,
@@ -45,11 +46,17 @@ const Results = () => {
     prevArrow: <PrevArrow />,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768,  settings: { slidesToShow: 1 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
 
-  if (loading) return <p className="text-center py-10">Loading results…</p>;
+  if (loading) {
+    return <p className="text-center py-10 text-gray-500">Loading results…</p>;
+  }
+
+  if (!items.length) {
+    return <p className="text-center py-10 text-gray-500">No results available.</p>;
+  }
 
   return (
     <section id="results" className="py-16 bg-white">
@@ -58,15 +65,17 @@ const Results = () => {
 
         {/* Year filter */}
         <div className="flex justify-center gap-2 mb-6 flex-wrap">
-          {years.map(y => (
+          {years.map(year => (
             <button
-              key={y}
-              onClick={() => setSelected(y)}
-              className={`px-4 py-1 rounded-full border ${
-                selected === y ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+              key={year}
+              onClick={() => setSelected(year)}
+              className={`px-4 py-1 rounded-full border transition ${
+                selected === year
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
               }`}
             >
-              NEET {y}
+              NEET {year}
             </button>
           ))}
         </div>
@@ -76,7 +85,7 @@ const Results = () => {
           {show.map(r => (
             <div key={r.id} className="p-2">
               <div className="rounded-xl text-center shadow-lg bg-gray-100 p-4">
-                {/* Photo */}
+                {/* Image */}
                 <img
                   src={r.photoUrl}
                   alt={r.name}

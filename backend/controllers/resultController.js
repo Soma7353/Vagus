@@ -1,4 +1,3 @@
-// controllers/resultController.js
 const Result = require('../models/Result');
 
 // Get all results (excluding image blob)
@@ -22,7 +21,9 @@ exports.getResultImage = async (req, res) => {
       return res.status(404).json({ error: 'Image not found' });
     }
 
-    res.set('Content-Type', 'image/jpeg'); // Change if needed
+    // Send image with correct content type
+    const contentType = result.image_type || 'image/jpeg';
+    res.set('Content-Type', contentType);
     res.send(result.image);
   } catch (err) {
     console.error('Error fetching result image:', err);
@@ -44,7 +45,8 @@ exports.createResult = async (req, res) => {
       college,
       rank,
       year,
-      image: req.file.buffer
+      image: req.file.buffer,
+      image_type: req.file.mimetype || 'image/jpeg'
     });
 
     res.status(201).json(result);
@@ -71,11 +73,11 @@ exports.updateResult = async (req, res) => {
 
     if (req.file) {
       result.image = req.file.buffer;
+      result.image_type = req.file.mimetype || 'image/jpeg';
     }
 
     await result.save();
-
-    res.json({ message: 'Result updated' });
+    res.json({ message: 'Result updated successfully' });
   } catch (err) {
     console.error('Error updating result:', err);
     res.status(500).json({ error: 'Failed to update result' });
@@ -91,7 +93,7 @@ exports.deleteResult = async (req, res) => {
     }
 
     await result.destroy();
-    res.json({ message: 'Result deleted' });
+    res.json({ message: 'Result deleted successfully' });
   } catch (err) {
     console.error('Error deleting result:', err);
     res.status(500).json({ error: 'Failed to delete result' });

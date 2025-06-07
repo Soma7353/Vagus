@@ -3,9 +3,9 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import { NextArrow, PrevArrow } from './BlueArrows'; // Optional: custom arrows
+import { NextArrow, PrevArrow } from './BlueArrows';
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://localhost/4000';
+const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000';
 
 const HomeSlider = () => {
   const [images, setImages] = useState([]);
@@ -16,10 +16,12 @@ const HomeSlider = () => {
       try {
         const res = await fetch(`${API_BASE}/api/slider`);
         const data = await res.json();
+
         const formatted = data.map((img) => ({
           ...img,
-          url: `${API_BASE}/uploads/${img.image}`,
+          url: `${API_BASE.replace(/\/$/, '')}/api/slider/${img.id}/photo`,
         }));
+
         setImages(formatted);
       } catch (error) {
         console.error('Failed to load slider images:', error);
@@ -53,7 +55,7 @@ const HomeSlider = () => {
             <div key={img.id} className="px-2">
               <img
                 src={img.url}
-                alt="Slider visual"
+                alt={`Slide ${img.id}`}
                 className="w-full h-[500px] object-cover rounded-xl shadow-md"
               />
             </div>

@@ -11,7 +11,8 @@ import Courses from './components/Courses';
 import Features from './components/Features';
 import DownloadSection from './components/DownloadSection';
 import ScrollToHash from './components/ScrollToHash';
-import HomeSlider from '../components/Slider'
+import Slider from './components/Slider';
+
 
 import DirectorsMessage from './pages/DirectorsMessage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -24,7 +25,7 @@ function App() {
   return (
     <Router>
       <ScrollToHash />
-      <HomeSlider />
+      <Slider />
       <Header />
       <Routes>
         <Route

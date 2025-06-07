@@ -9,7 +9,11 @@ const Slider = sequelize.define('Slider', {
   mimeType: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+    defaultValue: 'image/jpeg', // You can change or remove default if needed
+  },
+}, {
+  tableName: 'sliders',
+  timestamps: false,
 });
 
 module.exports = Slider;

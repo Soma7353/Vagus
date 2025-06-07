@@ -1,48 +1,64 @@
 const Slider = require('../models/Slider');
 
-// POST /api/slider
+// Upload image
 exports.uploadImage = async (req, res) => {
   try {
-    const { buffer, mimetype } = req.file;
-    const slider = await Slider.create({ photo: buffer, mimeType: mimetype });
-    res.status(201).json({ id: slider.id });
-  } catch (err) {
-    console.error('Upload error:', err);
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file uploaded' });
+    }
+
+    const newSlider = await Slider.create({
+      photo: req.file.buffer,
+      mimeType: req.file.mimetype,
+    });
+
+    res.status(201).json({ id: newSlider.id, message: 'Image uploaded successfully' });
+  } catch (error) {
+    console.error('Upload image error:', error);
     res.status(500).json({ error: 'Failed to upload image' });
   }
 };
 
-// GET /api/slider
+// Get all slider image IDs
 exports.getAllImageIds = async (req, res) => {
   try {
-    const sliders = await Slider.findAll({ attributes: ['id'] });
+    const sliders = await Slider.findAll({
+      attributes: ['id'],
+      order: [['id', 'ASC']],
+    });
     res.json(sliders);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch image IDs' });
+  } catch (error) {
+    console.error('Fetch slider IDs error:', error);
+    res.status(500).json({ error: 'Failed to fetch images' });
   }
 };
 
-// GET /api/slider/image/:id
+// Get slider image by ID
 exports.getImageById = async (req, res) => {
   try {
     const slider = await Slider.findByPk(req.params.id);
-    if (!slider) return res.status(404).send('Image not found');
+    if (!slider) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
 
     res.set('Content-Type', slider.mimeType);
     res.send(slider.photo);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to load image' });
+  } catch (error) {
+    console.error('Get image error:', error);
+    res.status(500).json({ error: 'Failed to retrieve image' });
   }
 };
 
-// DELETE /api/slider/:id
+// Delete slider image by ID
 exports.deleteImageById = async (req, res) => {
   try {
     const deleted = await Slider.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ error: 'Image not found' });
-
+    if (!deleted) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
     res.json({ message: 'Image deleted successfully' });
-  } catch (err) {
+  } catch (error) {
+    console.error('Delete image error:', error);
     res.status(500).json({ error: 'Failed to delete image' });
   }
 };

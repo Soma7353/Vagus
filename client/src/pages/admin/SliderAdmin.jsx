@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../api'; // Axios instance with baseURL
 
 const SliderAdmin = () => {
   const [images, setImages] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
+  // Fetch slider images
   const fetchImages = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/slider');
-      const data = await res.json();
-      setImages(data);
-    } catch (error) {
-      console.error('Failed to fetch images:', error);
+      const { data } = await api.get('/slider');
+      setImages(data || []);
+    } catch (err) {
+      console.error('Failed to fetch images:', err);
+      alert('Failed to load slider images.');
     }
   };
 
@@ -18,60 +21,76 @@ const SliderAdmin = () => {
     fetchImages();
   }, []);
 
+  // Handle file selection and preview
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    setSelectedFile(file);
+    if (file) setPreview(URL.createObjectURL(file));
+    else setPreview(null);
+  };
+
+  // Upload new image
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!selectedFile) return;
-
-    const formData = new FormData();
-    formData.append('photo', selectedFile);
+    if (!selectedFile) return alert('Please select an image first.');
 
     try {
-      await fetch('http://localhost:4000/api/slider', {
-        method: 'POST',
-        body: formData,
-      });
+      const fd = new FormData();
+      fd.append('photo', selectedFile);
+
+      await api.post('/slider', fd);
       setSelectedFile(null);
+      setPreview(null);
       fetchImages();
-    } catch (error) {
-      console.error('Upload failed:', error);
+    } catch (err) {
+      console.error('Upload failed:', err);
+      alert('Failed to upload image.');
     }
   };
 
+  // Delete image
   const handleDelete = async (id) => {
+    if (!window.confirm('Delete this image?')) return;
+
     try {
-      await fetch(`http://localhost:4000/api/slider/${id}`, {
-        method: 'DELETE',
-      });
+      await api.delete(`/slider/${id}`);
       fetchImages();
-    } catch (error) {
-      console.error('Delete failed:', error);
+    } catch (err) {
+      console.error('Delete failed:', err);
+      alert('Failed to delete image.');
     }
   };
 
   return (
     <div className="bg-white p-4 rounded shadow-md">
-      <h3 className="text-lg font-semibold mb-4">Upload Slider Image</h3>
+      <h3 className="text-lg font-semibold mb-4 text-blue-800">Manage Slider Images</h3>
 
       <form onSubmit={handleUpload} className="flex flex-wrap items-center gap-4 mb-6">
         <input
           type="file"
           accept="image/*"
-          onChange={(e) => setSelectedFile(e.target.files[0])}
-          className="block w-full sm:w-auto"
+          onChange={handleFileChange}
+          className="block w-full sm:w-auto border px-3 py-2 rounded"
         />
         <button
           type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
           Upload
         </button>
       </form>
 
+      {preview && (
+        <div className="mb-4">
+          <img src={preview} alt="Preview" className="h-24 rounded shadow mx-auto" />
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {images.map((img) => (
           <div key={img.id} className="relative">
             <img
-              src={`http://localhost:4000/api/slider/image/${img.id}`}
+              src={`/slider/image/${img.id}`}
               alt="Slider"
               className="w-full h-32 object-cover rounded shadow"
             />

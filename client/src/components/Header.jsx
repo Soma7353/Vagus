@@ -1,26 +1,13 @@
 import React, { useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { scrollToSection } from '../utils/scrollToSection';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Header = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
-  // Auto-close mobile nav or reset header scroll issues on route change
   useEffect(() => {
-    window.scrollTo(0, 0); // optional: ensure scroll resets
-    // If using mobile nav state like: setIsMobileOpen(false);
+    window.scrollTo(0, 0); // Optional: always scroll to top on route change
   }, [location.pathname]);
-
-  const handleNav = (id) => {
-    if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => scrollToSection(id), 100);
-    } else {
-      scrollToSection(id);
-    }
-  };
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow z-50">
@@ -35,11 +22,11 @@ const Header = () => {
         <nav className="hidden md:flex gap-6 text-sm font-medium">
           <Link to="/">Home</Link>
           <Link to="/directors-message">Director's Message</Link>
-          <span onClick={() => handleNav('courses')} className="cursor-pointer">Courses</span>
-          <span onClick={() => handleNav('results')} className="cursor-pointer">Results</span>
-          <span onClick={() => handleNav('gallery')} className="cursor-pointer">Gallery</span>
+          <Link to="/#courses">Courses</Link>
+          <Link to="/#results">Results</Link>
+          <Link to="/#gallery">Gallery</Link>
           <Link to="/downloads">Downloads</Link>
-          <span onClick={() => handleNav('testimonials')} className="cursor-pointer">Testimonials</span>
+          <Link to="/#testimonials">Testimonials</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/about">About Us</Link>
         </nav>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import api from '../api'; // axios instance
+import api from '../api';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -46,7 +46,9 @@ const Gallery = () => {
     ],
   };
 
-  if (loading) return <div className="text-center py-10">Loading gallery...</div>;
+  if (loading) {
+    return <div className="text-center py-10">Loading gallery...</div>;
+  }
 
   if (images.length === 0) {
     return (
@@ -57,9 +59,10 @@ const Gallery = () => {
   }
 
   return (
-    <section id="gallery" className="py-16 bg-gray-100">
+    <section id="gallery" className="pt-24 pb-16 bg-gray-100">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Gallery</h2>
+
         <Slider {...settings}>
           {images.map((img) => (
             <div key={img.id} className="p-2">

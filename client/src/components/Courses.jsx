@@ -57,13 +57,19 @@ const Courses = () => {
       { title: 'JEE – Advanced Course', features: ['Details coming soon...'] },
     ],
     foundation: [
-      { title: 'Foundation for Class 8', features: ['Basics of Science & Math', 'Early NEET/JEE concepts'] },
-      { title: 'Foundation for Class 9 & 10', features: ['Physics, Chemistry, Math, Biology', 'Olympiad Coaching'] },
+      {
+        title: 'Foundation for Class 8',
+        features: ['Basics of Science & Math', 'Early NEET/JEE concepts'],
+      },
+      {
+        title: 'Foundation for Class 9 & 10',
+        features: ['Physics, Chemistry, Math, Biology', 'Olympiad Coaching'],
+      },
     ],
   };
 
   return (
-     <section id="courses" className="py-16 bg-white">
+    <section id="courses" className="pt-24 pb-16 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-3xl font-bold text-center mb-4">
           Achieve Your <span className="text-indigo-600 underline">NEET</span> Dream With Tailored Courses
@@ -74,22 +80,34 @@ const Courses = () => {
         </p>
 
         {/* Tabs */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-6 flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('neet')}
-            className={`px-4 py-2 border ${activeTab === 'neet' ? 'bg-yellow-400 text-black font-semibold' : 'bg-white text-gray-700'} transition`}
+            className={`px-4 py-2 border ${
+              activeTab === 'neet'
+                ? 'bg-yellow-400 text-black font-semibold'
+                : 'bg-white text-gray-700'
+            } transition`}
           >
             Our NEET Courses
           </button>
           <button
             onClick={() => setActiveTab('jee')}
-            className={`px-4 py-2 border ${activeTab === 'jee' ? 'bg-blue-600 text-white font-semibold' : 'bg-white text-gray-700'} transition`}
+            className={`px-4 py-2 border ${
+              activeTab === 'jee'
+                ? 'bg-blue-600 text-white font-semibold'
+                : 'bg-white text-gray-700'
+            } transition`}
           >
             Our JEE Courses
           </button>
           <button
             onClick={() => setActiveTab('foundation')}
-            className={`px-4 py-2 border ${activeTab === 'foundation' ? 'bg-blue-600 text-white font-semibold' : 'bg-white text-gray-700'} transition`}
+            className={`px-4 py-2 border ${
+              activeTab === 'foundation'
+                ? 'bg-blue-600 text-white font-semibold'
+                : 'bg-white text-gray-700'
+            } transition`}
           >
             Our Foundation Courses
           </button>
@@ -98,7 +116,10 @@ const Courses = () => {
         {/* Course Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {courses[activeTab].map((course, idx) => (
-            <div key={idx} className="bg-white border rounded-lg shadow p-6 flex flex-col justify-between">
+            <div
+              key={idx}
+              className="bg-white border rounded-lg shadow p-6 flex flex-col justify-between"
+            >
               <h3 className="text-lg font-bold mb-4 text-gray-800">{course.title}</h3>
               <ul className="list-disc list-inside mb-6 space-y-1 text-sm text-gray-700">
                 {course.features.map((f, i) => (

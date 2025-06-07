@@ -30,13 +30,19 @@ const Gallery = () => {
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 6,
     slidesToScroll: 1,
-    nextArrow: <div className="slick-arrow right-2 text-blue-600 text-2xl cursor-pointer z-10">❯</div>,
-    prevArrow: <div className="slick-arrow left-2 text-blue-600 text-2xl cursor-pointer z-10">❮</div>,
+    nextArrow: (
+      <div className="slick-arrow right-2 text-blue-600 text-2xl cursor-pointer z-10">❯</div>
+    ),
+    prevArrow: (
+      <div className="slick-arrow left-2 text-blue-600 text-2xl cursor-pointer z-10">❮</div>
+    ),
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
+      { breakpoint: 1280, settings: { slidesToShow: 4 } },
+      { breakpoint: 1024, settings: { slidesToShow: 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2 } },
+      { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
 
@@ -52,21 +58,26 @@ const Gallery = () => {
 
   return (
     <section id="gallery" className="py-16 bg-gray-100">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Gallery</h2>
         <Slider {...settings}>
           {images.map((img) => (
             <div key={img.id} className="p-2">
-              <div className="overflow-hidden rounded shadow">
+              <div className="relative overflow-hidden rounded shadow hover:shadow-lg transition">
                 <img
                   src={`${API_BASE}/api/gallery/image/${img.id}`}
                   alt={img.title || 'Gallery Image'}
-                  className="w-full h-64 object-cover"
+                  className="w-full h-48 object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = '/fallback.png'; // fallback image path in public/
+                    e.target.src = '/fallback.png';
                   }}
                 />
+                {img.title && (
+                  <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-60 text-white text-sm px-2 py-1">
+                    {img.title}
+                  </div>
+                )}
               </div>
             </div>
           ))}

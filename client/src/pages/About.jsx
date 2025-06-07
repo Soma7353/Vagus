@@ -1,7 +1,11 @@
 import React from 'react';
 import {
-  FaChartLine, FaCoins, FaLightbulb,
-  FaRocket, FaHandshake, FaCogs
+  FaChartLine,
+  FaCoins,
+  FaLightbulb,
+  FaRocket,
+  FaHandshake,
+  FaCogs
 } from 'react-icons/fa';
 
 const About = () => {
@@ -12,9 +16,6 @@ const About = () => {
         <div className="grid md:grid-cols-2 gap-10 items-center mb-20">
           {/* Text Section */}
           <div>
-            <span className="text-sm font-semibold bg-orange-100 text-orange-600 px-3 py-1 rounded-full mb-2 inline-block">
-              About Company 🩺
-            </span>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               We believe in doing the right thing
             </h2>
@@ -43,10 +44,6 @@ const About = () => {
                 </p>
               </div>
             </div>
-
-            <button className="mt-6 px-6 py-2 bg-gray-900 text-white rounded hover:bg-gray-700 text-sm">
-              Learn More →
-            </button>
           </div>
 
           {/* Responsive YouTube Video */}
@@ -64,7 +61,7 @@ const About = () => {
           </div>
         </div>
 
-        {/* Bottom Card Grid */}
+        {/* Bottom Services Section */}
         <div className="text-center mb-8">
           <span className="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full inline-block">
             Our Services
@@ -105,7 +102,13 @@ const About = () => {
               <div className="mb-3">{card.icon}</div>
               <h4 className="font-semibold text-gray-800 mb-2">{card.title}</h4>
               <p className="text-sm text-gray-600">{card.desc}</p>
-              <a href="#" className="text-indigo-600 text-sm mt-3 inline-block">Read more →</a>
+              <a
+                href="#"
+                className="text-indigo-600 text-sm mt-3 inline-block"
+                onClick={(e) => e.preventDefault()}
+              >
+                Read more →
+              </a>
             </div>
           ))}
         </div>

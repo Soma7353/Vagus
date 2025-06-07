@@ -52,7 +52,7 @@ Message: ${message}
   };
 
   return (
-    <section className="py-16 bg-white text-center">
+    <section className="pt-24 pb-16 bg-white text-center min-h-screen">
       <h2 className="text-3xl font-bold mb-10">Contact Us</h2>
 
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
@@ -158,7 +158,7 @@ Message: ${message}
           width="100%"
           height="400"
           style={{ border: 0 }}
-          allowFullScreen=""
+          allowFullScreen
           loading="lazy"
           className="rounded shadow"
           referrerPolicy="no-referrer-when-downgrade"

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../api'; // Axios instance with baseURL = 'https://vagus-1.onrender.com'
+import api from '../../api'; // Axios instance
 
 const SliderAdmin = () => {
   const [images, setImages] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  // Fetch slider images
+  // Fetch all slider images
   const fetchImages = async () => {
     try {
-      // <-- Updated endpoint to include /api
       const { data } = await api.get('/api/slider');
       setImages(data || []);
     } catch (err) {
@@ -22,15 +21,14 @@ const SliderAdmin = () => {
     fetchImages();
   }, []);
 
-  // Handle file selection and preview
+  // Handle file change
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     setSelectedFile(file);
-    if (file) setPreview(URL.createObjectURL(file));
-    else setPreview(null);
+    setPreview(file ? URL.createObjectURL(file) : null);
   };
 
-  // Upload new image
+  // Upload selected file
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!selectedFile) return alert('Please select an image first.');
@@ -39,7 +37,6 @@ const SliderAdmin = () => {
       const fd = new FormData();
       fd.append('photo', selectedFile);
 
-      // <-- Updated endpoint to include /api
       await api.post('/api/slider', fd);
       setSelectedFile(null);
       setPreview(null);
@@ -50,12 +47,11 @@ const SliderAdmin = () => {
     }
   };
 
-  // Delete image
+  // Delete image by ID
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this image?')) return;
 
     try {
-      // <-- Updated endpoint to include /api
       await api.delete(`/api/slider/${id}`);
       fetchImages();
     } catch (err) {
@@ -92,9 +88,8 @@ const SliderAdmin = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {images.map((img) => (
           <div key={img.id} className="relative">
-            {/* Update image URL to include /api */}
             <img
-              src={`/api/slider/image/${img.id}`}
+              src={`${api.defaults.baseURL}/api/slider/image/${img.id}`} // ✅ full image URL
               alt="Slider"
               className="w-full h-32 object-cover rounded shadow"
             />

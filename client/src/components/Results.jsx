@@ -14,14 +14,13 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    const fetchResults = async () => {
       try {
         const res = await api.get('/api/results');
-        const data = (res.data || []).map((r) => ({
+        const data = res.data.map((r) => ({
           ...r,
           photoUrl: `${API_BASE}/api/results/${r.id}/image`,
         }));
-
         setItems(data);
 
         const ys = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
@@ -32,7 +31,8 @@ const Results = () => {
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    fetchResults();
   }, []);
 
   const filtered = selected ? items.filter((i) => i.year === selected) : [];
@@ -52,61 +52,60 @@ const Results = () => {
     ],
   };
 
-  if (loading) {
-    return <p className="text-center py-10 text-gray-500">Loading results…</p>;
-  }
-
-  if (!items.length) {
-    return <p className="text-center py-10 text-gray-500">No results available.</p>;
-  }
-
   return (
     <section id="results" className="pt-28 pb-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Our Achievers</h2>
 
-        {/* Year filter */}
-        <div className="flex justify-center gap-2 mb-6 flex-wrap">
-          {years.map((year) => (
-            <button
-              key={year}
-              onClick={() => setSelected(year)}
-              className={`px-4 py-1 rounded-full border transition ${
-                selected === year
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-              }`}
-            >
-              NEET {year}
-            </button>
-          ))}
-        </div>
+        {/* Year Filter */}
+        {years.length > 0 && (
+          <div className="flex justify-center gap-2 mb-6 flex-wrap">
+            {years.map((year) => (
+              <button
+                key={year}
+                onClick={() => setSelected(year)}
+                className={`px-4 py-1 rounded-full border transition ${
+                  selected === year
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                }`}
+              >
+                NEET {year}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {/* Slider */}
-        <Slider {...slick}>
-          {filtered.map((r) => (
-            <div key={r.id} className="p-2">
-              <div className="rounded-xl text-center shadow-lg bg-gray-100 p-4">
-                {/* Image */}
-                <img
-                  src={r.photoUrl}
-                  alt={r.name}
-                  className="w-40 h-40 object-cover mx-auto rounded-full border-4 border-yellow-400 mb-3"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/fallback.png';
-                  }}
-                />
-                {/* Info */}
-                <h4 className="text-lg font-bold uppercase">{r.name}</h4>
-                <p className="text-sm font-semibold text-gray-600">Rank {r.rank}</p>
-                <p className="inline-block bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded mt-2">
-                  {r.college}
-                </p>
+        {/* Loading */}
+        {loading ? (
+          <p className="text-center py-10 text-gray-500">Loading results…</p>
+        ) : !filtered.length ? (
+          <p className="text-center py-10 text-gray-500">No results found for {selected}</p>
+        ) : (
+          <Slider {...slick}>
+            {filtered.map((r) => (
+              <div key={r.id} className="p-2">
+                <div className="rounded-xl text-center shadow-lg bg-gray-100 p-4">
+                  <img
+                    src={r.photoUrl}
+                    alt={r.name}
+                    loading="lazy"
+                    className="w-40 h-40 object-cover mx-auto rounded-full border-4 border-yellow-400 mb-3"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/fallback.png';
+                    }}
+                  />
+                  <h4 className="text-lg font-bold uppercase">{r.name}</h4>
+                  <p className="text-sm font-semibold text-gray-600">Rank {r.rank}</p>
+                  <p className="inline-block bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded mt-2">
+                    {r.college}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        )}
       </div>
     </section>
   );

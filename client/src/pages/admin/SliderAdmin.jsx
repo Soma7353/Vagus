@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../api'; // Axios instance with baseURL
+import api from '../../api'; // Axios instance with baseURL = 'https://vagus-1.onrender.com'
 
 const SliderAdmin = () => {
   const [images, setImages] = useState([]);
@@ -9,7 +9,8 @@ const SliderAdmin = () => {
   // Fetch slider images
   const fetchImages = async () => {
     try {
-      const { data } = await api.get('/slider');
+      // <-- Updated endpoint to include /api
+      const { data } = await api.get('/api/slider');
       setImages(data || []);
     } catch (err) {
       console.error('Failed to fetch images:', err);
@@ -38,7 +39,8 @@ const SliderAdmin = () => {
       const fd = new FormData();
       fd.append('photo', selectedFile);
 
-      await api.post('/slider', fd);
+      // <-- Updated endpoint to include /api
+      await api.post('/api/slider', fd);
       setSelectedFile(null);
       setPreview(null);
       fetchImages();
@@ -53,7 +55,8 @@ const SliderAdmin = () => {
     if (!window.confirm('Delete this image?')) return;
 
     try {
-      await api.delete(`/slider/${id}`);
+      // <-- Updated endpoint to include /api
+      await api.delete(`/api/slider/${id}`);
       fetchImages();
     } catch (err) {
       console.error('Delete failed:', err);
@@ -89,8 +92,9 @@ const SliderAdmin = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {images.map((img) => (
           <div key={img.id} className="relative">
+            {/* Update image URL to include /api */}
             <img
-              src={`/slider/image/${img.id}`}
+              src={`/api/slider/image/${img.id}`}
               alt="Slider"
               className="w-full h-32 object-cover rounded shadow"
             />

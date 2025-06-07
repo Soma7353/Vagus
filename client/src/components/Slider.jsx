@@ -57,7 +57,7 @@ const HomeSlider = () => {
                 <img
                   src={img.url}
                   alt={`Slide ${img.id}`}
-                  className="w-full h-[370px] object-cover"
+                  className="w-full h-[230px] object-cover"
                 />
               </div>
             ))}

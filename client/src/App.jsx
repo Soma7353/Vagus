@@ -34,12 +34,13 @@ function App() {
             <>
               <main className="pt-24">
                 <Hero />
+                <Slider />
                 <Courses />
                 <Features />
                 <Results />
                 <Gallery />
                 <Testimonials />
-                <Slider />
+                
               </main>
               <Footer />
             </>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../api';           // axios instance with baseURL
+import api from '../../api'; // Axios instance with baseURL
 
 const ResultAdmin = () => {
   const [results, setResults] = useState([]);
@@ -11,13 +11,14 @@ const ResultAdmin = () => {
     year: '',
     image: null,
   });
-  const [preview, setPreview] = useState(null); // thumbnail preview
+  const [preview, setPreview] = useState(null); // Thumbnail preview
 
-  /* ─────── Fetch list once ─────── */
+  // ─────── Fetch results once ───────
   useEffect(() => {
     fetchResults();
   }, []);
 
+  // ─────── Get all results ───────
   const fetchResults = async () => {
     try {
       const { data } = await api.get('/api/results');
@@ -28,20 +29,18 @@ const ResultAdmin = () => {
     }
   };
 
-  /* ─────── Handle input change ─────── */
+  // ─────── Handle input changes ───────
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     const file = files?.[0];
-
     setForm((prev) => ({ ...prev, [name]: file || value }));
 
-    // update preview when selecting a new image
     if (name === 'image' && file) {
       setPreview(URL.createObjectURL(file));
     }
   };
 
-  /* ─────── Submit (create / update) ─────── */
+  // ─────── Submit form ───────
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,7 +65,7 @@ const ResultAdmin = () => {
     }
   };
 
-  /* ─────── Reset form ─────── */
+  // ─────── Reset form ───────
   const resetForm = () => {
     setForm({
       id: null,
@@ -79,7 +78,7 @@ const ResultAdmin = () => {
     setPreview(null);
   };
 
-  /* ─────── Edit existing row ─────── */
+  // ─────── Edit row ───────
   const handleEdit = (item) => {
     setForm({
       id: item.id,
@@ -87,13 +86,12 @@ const ResultAdmin = () => {
       rank: item.rank,
       college: item.college,
       year: item.year,
-      image: null,              // must choose new file if replacing
+      image: null, // Must upload new image to change
     });
-    // show existing thumbnail
-    setPreview(`/api/results/${item.id}/image`);
+    setPreview(`/api/results/image/${item.id}`);
   };
 
-  /* ─────── Delete row ─────── */
+  // ─────── Delete row ───────
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this result?')) return;
     try {
@@ -105,12 +103,12 @@ const ResultAdmin = () => {
     }
   };
 
-  /* ─────── UI ─────── */
+  // ─────── UI ───────
   return (
     <div className="border p-6 bg-white rounded shadow mb-10">
       <h2 className="text-xl font-semibold mb-4 text-blue-800">Manage Results</h2>
 
-      {/* ─────────── Form ─────────── */}
+      {/* ─────── Form ─────── */}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {['name', 'rank', 'college', 'year'].map((field) => (
           <input
@@ -132,7 +130,6 @@ const ResultAdmin = () => {
           className="border px-4 py-2 rounded"
         />
 
-        {/* Preview thumbnail (existing or freshly selected) */}
         {preview && (
           <div className="md:col-span-2">
             <img src={preview} alt="Preview" className="h-24 rounded shadow mx-auto" />
@@ -147,13 +144,13 @@ const ResultAdmin = () => {
         </button>
       </form>
 
-      {/* ─────────── List ─────────── */}
+      {/* ─────── Results List ─────── */}
       <ul className="space-y-3">
         {results.map((r) => (
           <li key={r.id} className="flex justify-between items-center bg-gray-100 p-3 rounded">
             <div className="flex items-center gap-3">
               <img
-                src={`/api/results/${r.id}/image`}
+                src={`/api/results/image/${r.id}`}
                 alt={r.name}
                 className="w-12 h-12 object-cover rounded-full border"
               />
@@ -162,14 +159,9 @@ const ResultAdmin = () => {
                 <p className="text-sm text-gray-600">{r.college} ({r.year})</p>
               </div>
             </div>
-
             <div className="flex gap-3">
-              <button onClick={() => handleEdit(r)}   className="text-blue-600 hover:underline">
-                Edit
-              </button>
-              <button onClick={() => handleDelete(r.id)} className="text-red-600 hover:underline">
-                Delete
-              </button>
+              <button onClick={() => handleEdit(r)} className="text-blue-600 hover:underline">Edit</button>
+              <button onClick={() => handleDelete(r.id)} className="text-red-600 hover:underline">Delete</button>
             </div>
           </li>
         ))}

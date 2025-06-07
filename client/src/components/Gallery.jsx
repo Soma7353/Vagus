@@ -1,73 +1,51 @@
+// src/components/Gallery.jsx
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import api from '../api'; // axios instance
+import api from '../api';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
-
 const Gallery = () => {
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchGallery = async () => {
-    try {
-      const res = await api.get('/api/gallery');
-      setImages(res.data || []);
-    } catch (err) {
-      console.error('Gallery load error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchGallery();
+    api.get('/api/gallery')
+      .then((res) => setImages(res.data))
+      .catch((err) => console.error('Gallery load error:', err));
   }, []);
+
+  // Group images into chunks of 6
+  const chunkedImages = [];
+  for (let i = 0; i < images.length; i += 6) {
+    chunkedImages.push(images.slice(i, i + 6));
+  }
 
   const settings = {
     dots: true,
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
-    nextArrow: <div className="slick-arrow right-2 text-blue-600 text-2xl cursor-pointer z-10">❯</div>,
-    prevArrow: <div className="slick-arrow left-2 text-blue-600 text-2xl cursor-pointer z-10">❮</div>,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
-    ],
   };
 
-  if (loading) return <div className="text-center py-10">Loading gallery...</div>;
-
-  if (images.length === 0) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        No images found in the gallery.
-      </div>
-    );
-  }
-
   return (
-    <section id="gallery" className="py-16 bg-gray-100">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Gallery</h2>
+    <section id="gallery" className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl font-bold text-blue-800 text-center mb-10">Gallery</h2>
+
         <Slider {...settings}>
-          {images.map((img) => (
-            <div key={img.id} className="p-2">
-              <div className="overflow-hidden rounded shadow">
-                <img
-                  src={`${API_BASE}/api/gallery/image/${img.id}`}
-                  alt={img.title || 'Gallery Image'}
-                  className="w-full h-64 object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/fallback.png'; // fallback image path in public/
-                  }}
-                />
-              </div>
+          {chunkedImages.map((group, index) => (
+            <div key={index} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-4">
+              {group.map((img) => (
+                <div key={img.id} className="overflow-hidden rounded-lg shadow hover:shadow-md transition">
+                  <img
+                    src={`http://localhost:5000${img.filePath}`}
+                    alt={img.title}
+                    className="w-full h-52 object-cover"
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </Slider>

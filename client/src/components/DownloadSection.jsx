@@ -33,8 +33,8 @@ const DownloadSection = () => {
   }
 
   return (
-    <section id="downloads" className="py-16 bg-white">
-      <div className="max-w-5xl mx-auto px-4">
+    <section id="downloads" className="pt-28 pb-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">
           Download Study Materials
         </h2>

@@ -61,7 +61,7 @@ const Results = () => {
   }
 
   return (
-    <section id="results" className="py-16 bg-white">
+    <section id="results" className="pt-28 pb-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Our Achievers</h2>
 

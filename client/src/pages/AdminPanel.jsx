@@ -4,6 +4,7 @@ import GalleryAdmin from './admin/GalleryAdmin';
 import TestimonialAdmin from './admin/TestimonialAdmin';
 import DownloadAdmin from './admin/DownloadAdmin';
 import Popup from './admin/Popup'; // Ensure this path is correct
+import SliderAdmin from './admin/SliderAdmin'; // NEW: import slider admin
 
 const AdminPanel = () => {
   const [popupEnabled, setPopupEnabled] = useState(false);
@@ -46,6 +47,12 @@ const AdminPanel = () => {
         <h2 className="text-xl font-semibold mb-2">Admin Alert</h2>
         <p className="text-gray-700">This is your custom popup message.</p>
       </Popup>
+
+      {/* Slider Admin Section */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-4">Slider Images</h2>
+        <SliderAdmin />
+      </section>
 
       {/* Admin Sections */}
       <section className="mb-12">

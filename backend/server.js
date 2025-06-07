@@ -22,6 +22,7 @@ const downloadRoutes    = require('./routes/downloadRoutes');
 const galleryRoutes     = require('./routes/galleryRoutes');
 const resultRoutes      = require('./routes/resultRoutes');
 const adminRoutes       = require('./routes/admin');
+const sliderRoutes      = require('./routes/sliderRoutes'); // ✅ Added
 
 // Route Mounting
 app.use('/api/testimonials', testimonialRoutes);
@@ -29,11 +30,18 @@ app.use('/api/downloads',    downloadRoutes);
 app.use('/api/gallery',      galleryRoutes);
 app.use('/api/results',      resultRoutes);
 app.use('/api/auth',         adminRoutes);
+app.use('/api/slider',       sliderRoutes); // ✅ Added
 
 // Default route
 app.get('/', (req, res) => {
   res.send('NEET Academy API is running');
 });
+
+// Sync Sequelize models (Optional)
+const Slider = require('./models/Slider'); // ✅ Import model
+sequelize.sync({ alter: true }) // or { force: true } if needed
+  .then(() => console.log('Database synced'))
+  .catch(err => console.error('Database sync error:', err));
 
 // Start server
 const PORT = process.env.PORT || 5000;

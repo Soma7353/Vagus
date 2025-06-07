@@ -3,7 +3,7 @@ import ResultAdmin from './admin/ResultAdmin';
 import GalleryAdmin from './admin/GalleryAdmin';
 import TestimonialAdmin from './admin/TestimonialAdmin';
 import DownloadAdmin from './admin/DownloadAdmin';
-import Popup from './admin/Popup'; // Adjust path based on actual location
+import Popup from './admin/Popup'; // Ensure this path is correct
 
 const AdminPanel = () => {
   const [popupEnabled, setPopupEnabled] = useState(false);
@@ -21,7 +21,7 @@ const AdminPanel = () => {
 
       {/* Popup Toggle Section */}
       <div className="bg-gray-100 p-4 rounded mb-6 flex justify-between items-center">
-        <div>
+        <div className="flex items-center">
           <label className="font-medium mr-2">Enable Popup:</label>
           <input
             type="checkbox"
@@ -33,7 +33,7 @@ const AdminPanel = () => {
         <button
           onClick={handleTogglePopup}
           disabled={!popupEnabled}
-          className={`ml-4 px-4 py-2 rounded text-white ${
+          className={`ml-4 px-4 py-2 rounded text-white transition ${
             popupEnabled ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
           }`}
         >
@@ -41,13 +41,13 @@ const AdminPanel = () => {
         </button>
       </div>
 
-      {/* Render Popup */}
+      {/* Popup Component */}
       <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
         <h2 className="text-xl font-semibold mb-2">Admin Alert</h2>
         <p className="text-gray-700">This is your custom popup message.</p>
       </Popup>
 
-      {/* Other Admin Sections */}
+      {/* Admin Sections */}
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Results</h2>
         <ResultAdmin />
@@ -68,15 +68,18 @@ const AdminPanel = () => {
         <DownloadAdmin />
       </section>
 
-      <button
-        onClick={() => {
-          localStorage.removeItem('admin_logged_in');
-          window.location.href = '/admin-login';
-        }}
-        className="bg-red-600 text-white px-4 py-2 rounded float-right mb-4"
-      >
-        Logout
-      </button>
+      {/* Logout Button */}
+      <div className="flex justify-end mt-8">
+        <button
+          onClick={() => {
+            localStorage.removeItem('admin_logged_in');
+            window.location.href = '/admin-login';
+          }}
+          className="bg-red-600 text-white px-4 py-2 rounded"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

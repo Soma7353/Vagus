@@ -30,7 +30,7 @@ const Gallery = () => {
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 6,
+    slidesToShow: 3,
     slidesToScroll: 1,
     nextArrow: (
       <div className="slick-arrow right-2 text-blue-600 text-2xl cursor-pointer z-10">❯</div>
@@ -67,7 +67,7 @@ const Gallery = () => {
                 <img
                   src={`${API_BASE}/api/gallery/image/${img.id}`}
                   alt={img.title || 'Gallery Image'}
-                  className="w-full h-52 object-cover"
+                  className="w-full h-64 object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = '/fallback.png';

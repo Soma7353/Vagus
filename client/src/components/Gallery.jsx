@@ -67,7 +67,7 @@ const Gallery = () => {
                 <img
                   src={`${API_BASE}/api/gallery/image/${img.id}`}
                   alt={img.title || 'Gallery Image'}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-52 object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = '/fallback.png';

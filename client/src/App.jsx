@@ -33,8 +33,8 @@ function App() {
           element={
             <>
               <main className="pt-24">
-                <Hero />
                 <Slider />
+                <Hero />
                 <Courses />
                 <Features />
                 <Results />

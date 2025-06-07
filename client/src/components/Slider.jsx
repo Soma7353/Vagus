@@ -46,21 +46,23 @@ const HomeSlider = () => {
   };
 
   return (
-    <div className="pt-20">
+    <div className="pt-0">
       {loading ? (
         <p className="text-center py-8 text-gray-500">Loading slider…</p>
       ) : (
-        <Slider {...settings}>
-          {images.map((img) => (
-            <div key={img.id} className="px-2">
-              <img
-                src={img.url}
-                alt={`Slide ${img.id}`}
-                className="w-full h-[500px] object-cover rounded-xl shadow-md"
-              />
-            </div>
-          ))}
-        </Slider>
+        <div className="w-full max-w-screen-2xl mx-auto overflow-hidden">
+          <Slider {...settings}>
+            {images.map((img) => (
+              <div key={img.id} className="px-0">
+                <img
+                  src={img.url}
+                  alt={`Slide ${img.id}`}
+                  className="w-full h-[370px] object-cover"
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
       )}
     </div>
   );

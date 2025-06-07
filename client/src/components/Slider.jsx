@@ -19,7 +19,7 @@ const HomeSlider = () => {
 
         const formatted = data.map((img) => ({
           ...img,
-          url: `${API_BASE.replace(/\/$/, '')}/api/slider/${img.id}/photo`,
+          url: `${API_BASE.replace(/\/$/, '')}/api/slider/image/${img.id}`,
         }));
 
         setImages(formatted);

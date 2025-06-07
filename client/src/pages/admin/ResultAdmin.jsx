@@ -1,110 +1,173 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api'; // Axios instance with baseURL
 
-const SliderAdmin = () => {
-  const [images, setImages] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+const ResultAdmin = () => {
+  const [results, setResults] = useState([]);
+  const [form, setForm] = useState({
+    id: null,
+    name: '',
+    rank: '',
+    college: '',
+    year: '',
+    image: null,
+  });
+  const [preview, setPreview] = useState(null); // Thumbnail preview
 
-  // Fetch slider images
-  const fetchImages = async () => {
-    try {
-      const { data } = await api.get('/slider');
-      setImages(data || []);
-    } catch (err) {
-      console.error('Failed to fetch images:', err);
-      alert('Failed to load slider images.');
-    }
-  };
-
+  // ─────── Fetch results once ───────
   useEffect(() => {
-    fetchImages();
+    fetchResults();
   }, []);
 
-  // Handle file selection and preview
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    setSelectedFile(file);
-    if (file) setPreview(URL.createObjectURL(file));
-    else setPreview(null);
+  // ─────── Get all results ───────
+  const fetchResults = async () => {
+    try {
+      const { data } = await api.get('/api/results');
+      setResults(data || []);
+    } catch (err) {
+      console.error('Error fetching results:', err);
+      alert('Failed to load results.');
+    }
   };
 
-  // Upload new image
-  const handleUpload = async (e) => {
+  // ─────── Handle input changes ───────
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    const file = files?.[0];
+    setForm((prev) => ({ ...prev, [name]: file || value }));
+
+    if (name === 'image' && file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  // ─────── Submit form ───────
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedFile) return alert('Please select an image first.');
+
+    const fd = new FormData();
+    fd.append('name', form.name);
+    fd.append('rank', form.rank);
+    fd.append('college', form.college);
+    fd.append('year', form.year);
+    if (form.image) fd.append('image', form.image);
 
     try {
-      const fd = new FormData();
-      fd.append('photo', selectedFile);
-
-      await api.post('/slider', fd);
-      setSelectedFile(null);
-      setPreview(null);
-      fetchImages();
+      if (form.id) {
+        await api.put(`/api/results/${form.id}`, fd);
+      } else {
+        await api.post('/api/results', fd);
+      }
+      fetchResults();
+      resetForm();
     } catch (err) {
-      console.error('Upload failed:', err);
-      alert('Failed to upload image.');
+      console.error('Error saving result:', err);
+      alert('Failed to save result.');
     }
   };
 
-  // Delete image
+  // ─────── Reset form ───────
+  const resetForm = () => {
+    setForm({
+      id: null,
+      name: '',
+      rank: '',
+      college: '',
+      year: '',
+      image: null,
+    });
+    setPreview(null);
+  };
+
+  // ─────── Edit row ───────
+  const handleEdit = (item) => {
+    setForm({
+      id: item.id,
+      name: item.name,
+      rank: item.rank,
+      college: item.college,
+      year: item.year,
+      image: null, // Must upload new image to change
+    });
+    setPreview(`/api/results/image/${item.id}`);
+  };
+
+  // ─────── Delete row ───────
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this image?')) return;
-
+    if (!window.confirm('Delete this result?')) return;
     try {
-      await api.delete(`/slider/${id}`);
-      fetchImages();
+      await api.delete(`/api/results/${id}`);
+      fetchResults();
     } catch (err) {
-      console.error('Delete failed:', err);
-      alert('Failed to delete image.');
+      console.error('Error deleting result:', err);
+      alert('Failed to delete result.');
     }
   };
 
+  // ─────── UI ───────
   return (
-    <div className="bg-white p-4 rounded shadow-md">
-      <h3 className="text-lg font-semibold mb-4 text-blue-800">Manage Slider Images</h3>
+    <div className="border p-6 bg-white rounded shadow mb-10">
+      <h2 className="text-xl font-semibold mb-4 text-blue-800">Manage Results</h2>
 
-      <form onSubmit={handleUpload} className="flex flex-wrap items-center gap-4 mb-6">
+      {/* ─────── Form ─────── */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {['name', 'rank', 'college', 'year'].map((field) => (
+          <input
+            key={field}
+            name={field}
+            value={form[field]}
+            onChange={handleChange}
+            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+            required
+            className="border px-4 py-2 rounded"
+          />
+        ))}
+
         <input
           type="file"
+          name="image"
           accept="image/*"
-          onChange={handleFileChange}
-          className="block w-full sm:w-auto border px-3 py-2 rounded"
+          onChange={handleChange}
+          className="border px-4 py-2 rounded"
         />
+
+        {preview && (
+          <div className="md:col-span-2">
+            <img src={preview} alt="Preview" className="h-24 rounded shadow mx-auto" />
+          </div>
+        )}
+
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded col-span-1 md:col-span-2"
         >
-          Upload
+          {form.id ? 'Update Result' : 'Add Result'}
         </button>
       </form>
 
-      {preview && (
-        <div className="mb-4">
-          <img src={preview} alt="Preview" className="h-24 rounded shadow mx-auto" />
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {images.map((img) => (
-          <div key={img.id} className="relative">
-            <img
-              src={`/slider/image/${img.id}`}
-              alt="Slider"
-              className="w-full h-32 object-cover rounded shadow"
-            />
-            <button
-              onClick={() => handleDelete(img.id)}
-              className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700"
-            >
-              ×
-            </button>
-          </div>
+      {/* ─────── Results List ─────── */}
+      <ul className="space-y-3">
+        {results.map((r) => (
+          <li key={r.id} className="flex justify-between items-center bg-gray-100 p-3 rounded">
+            <div className="flex items-center gap-3">
+              <img
+                src={`/api/results/image/${r.id}`}
+                alt={r.name}
+                className="w-12 h-12 object-cover rounded-full border"
+              />
+              <div>
+                <p className="font-medium">{r.name} — Rank {r.rank}</p>
+                <p className="text-sm text-gray-600">{r.college} ({r.year})</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => handleEdit(r)} className="text-blue-600 hover:underline">Edit</button>
+              <button onClick={() => handleDelete(r.id)} className="text-red-600 hover:underline">Delete</button>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
 
-export default SliderAdmin;
+export default ResultAdmin;

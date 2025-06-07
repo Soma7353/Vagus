@@ -5,22 +5,23 @@ import {
   FaLightbulb,
   FaRocket,
   FaHandshake,
-  FaCogs
+  FaCogs,
 } from 'react-icons/fa';
 
 const About = () => {
   return (
-    <section id="about" className="py-16 bg-white">
+    <section id="about" className="pt-24 pb-16 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         {/* Top Section */}
         <div className="grid md:grid-cols-2 gap-10 items-center mb-20">
-          {/* Text Section */}
+          {/* Text and Icons */}
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               We believe in doing the right thing
             </h2>
             <p className="text-gray-600 mb-6">
-              Foster a supportive and inclusive environment where our team can thrive. We believe in doing the right things, always.
+              Foster a supportive and inclusive environment where our team can thrive.
+              We believe in doing the right things, always.
             </p>
 
             <div className="grid grid-cols-2 gap-4">
@@ -46,29 +47,29 @@ const About = () => {
             </div>
           </div>
 
-          {/* Responsive YouTube Video */}
+          {/* Image or YouTube Embed */}
           <div className="rounded-lg overflow-hidden shadow-lg">
-            <div className="relative pb-[56.25%] h-0">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/uQzFihB5-B4"
-                title="Director's Message"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
+            <iframe
+              width="100%"
+              height="315"
+              src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+              title="Director's Message"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
           </div>
         </div>
 
-        {/* Bottom Services Section */}
+        {/* Bottom Card Grid */}
         <div className="text-center mb-8">
           <span className="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full inline-block">
             Our Services
           </span>
           <h2 className="text-2xl font-bold mt-2">Unleash Your Potential</h2>
           <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
-            About Us section typically appears on a company’s website and provides visitors with key information about the entity.
+            About Us section typically appears on a company or organization’s website and
+            provides visitors with key information about the entity.
           </p>
         </div>
 
@@ -77,7 +78,8 @@ const About = () => {
             {
               icon: <FaLightbulb className="text-indigo-600 text-xl" />,
               title: 'Creative Thinking',
-              desc: 'We nurture problem-solving and new ideas through critical thinking.',
+              desc:
+                'We nurture problem-solving and new ideas through critical thinking.',
             },
             {
               icon: <FaRocket className="text-pink-500 text-xl" />,
@@ -102,11 +104,7 @@ const About = () => {
               <div className="mb-3">{card.icon}</div>
               <h4 className="font-semibold text-gray-800 mb-2">{card.title}</h4>
               <p className="text-sm text-gray-600">{card.desc}</p>
-              <a
-                href="#"
-                className="text-indigo-600 text-sm mt-3 inline-block"
-                onClick={(e) => e.preventDefault()}
-              >
+              <a href="#" className="text-indigo-600 text-sm mt-3 inline-block">
                 Read more →
               </a>
             </div>

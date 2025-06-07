@@ -9,36 +9,24 @@ const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Safe YouTube embed converter
   const convertToEmbed = useCallback((url) => {
     if (!url || typeof url !== 'string') return '';
     const trimmed = url.trim();
-    if (!trimmed) return '';
-
     try {
       const u = new URL(trimmed);
-
       if (u.hostname === 'youtu.be') {
         return `https://www.youtube.com/embed${u.pathname}`;
       }
-
       if (u.pathname.startsWith('/shorts/')) {
         return `https://www.youtube.com/embed${u.pathname.replace('/shorts', '')}`;
       }
-
       const id = u.searchParams.get('v');
-      if (id) {
-        return `https://www.youtube.com/embed/${id}`;
-      }
-
-      return trimmed; // fallback if already /embed/ or unknown pattern
-    } catch (err) {
-      console.warn('Invalid video_link:', url);
+      return id ? `https://www.youtube.com/embed/${id}` : trimmed;
+    } catch {
       return '';
     }
   }, []);
 
-  // ✅ Fetch testimonials and attach embedUrl
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
@@ -54,78 +42,62 @@ const Testimonials = () => {
         setLoading(false);
       }
     };
-
     fetchTestimonials();
   }, [convertToEmbed]);
 
-  // ✅ Slider settings
-  const slidesVisible = Math.min(3, testimonials.length || 1);
   const settings = {
     dots: true,
     arrows: true,
-    infinite: testimonials.length > slidesVisible,
+    infinite: testimonials.length > 2,
     speed: 500,
-    slidesToShow: slidesVisible,
+    slidesToShow: 2,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: Math.min(2, slidesVisible) } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
+      { breakpoint: 1024, settings: { slidesToShow: 1 } },
     ],
   };
 
-  // ✅ Loading state
-  if (loading) {
-    return <div className="text-center py-10">Loading testimonials...</div>;
-  }
-
-  // ✅ No data fallback
-  if (testimonials.length === 0) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        No testimonials found.
-      </div>
-    );
-  }
+  if (loading) return <div className="text-center py-10">Loading testimonials...</div>;
+  if (testimonials.length === 0) return <div className="text-center py-10 text-gray-500">No testimonials found.</div>;
 
   return (
-    <section id="testimonials" className="py-16 bg-white">
+    <section id="testimonials" className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">
+        <h2 className="text-3xl font-bold text-center text-blue-800 mb-10">
           Student Testimonials
         </h2>
 
         <Slider {...settings}>
           {testimonials.map((t) => (
             <div key={t.id} className="px-2">
-              <div className="bg-white rounded-lg shadow flex flex-col h-full">
-                {t.embedUrl ? (
-                  <div className="aspect-video">
+              <div className="flex flex-col md:flex-row bg-white rounded-lg shadow overflow-hidden h-full">
+                <div className="md:w-1/2">
+                  {t.embedUrl ? (
                     <iframe
                       src={t.embedUrl}
                       title={`${t.name} testimonial`}
-                      className="w-full h-full rounded-t-lg"
+                      className="w-full h-full min-h-[250px] object-cover"
                       frameBorder="0"
                       loading="lazy"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
-                  </div>
-                ) : (
-                  <div className="aspect-video flex items-center justify-center rounded-t-lg bg-gray-100">
-                    <span className="text-gray-400 text-sm">No video</span>
-                  </div>
-                )}
-
-                <div className="p-3 grow">
-                  <h4 className="font-bold text-blue-700 text-sm">{t.name}</h4>
-                  {t.college && (
-                    <p className="text-gray-500 text-xs italic">{t.college}</p>
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-gray-200 text-gray-500">
+                      No video
+                    </div>
                   )}
+                </div>
+                <div className="md:w-1/2 p-6 flex flex-col justify-center text-left">
                   {t.message && (
-                    <p className="text-gray-700 text-sm mt-1">{t.message}</p>
+                    <p className="text-lg text-gray-700 mb-4 font-medium leading-relaxed">“{t.message}”</p>
                   )}
+                  <div>
+                    <p className="text-blue-700 font-semibold text-md">{t.name}</p>
+                    {t.college && <p className="text-sm text-gray-500">{t.college}</p>}
+                  </div>
                 </div>
               </div>
             </div>

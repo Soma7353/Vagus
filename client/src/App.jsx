@@ -25,7 +25,7 @@ function App() {
   return (
     <Router>
       <ScrollToHash />
-      <Slider />
+      
       <Header />
       <Routes>
         <Route
@@ -39,6 +39,7 @@ function App() {
                 <Results />
                 <Gallery />
                 <Testimonials />
+                <Slider />
               </main>
               <Footer />
             </>

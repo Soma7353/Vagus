@@ -1,34 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import api from '../api';                     // axios with baseURL
+import api from '../api';
 import { NextArrow, PrevArrow } from './BlueArrows';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-// ⚙️  Set your backend root (Render URL in prod, empty on same origin)
 const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 
-
 const Results = () => {
-  const [items, setItems]     = useState([]);
-  const [years, setYears]     = useState([]);
+  const [items, setItems] = useState([]);
+  const [years, setYears] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ─── Fetch once ───
   useEffect(() => {
     (async () => {
       try {
-        const res  = await api.get('/api/results');
-        const data = (res.data || []).map(r => ({
+        const res = await api.get('/api/results');
+        const data = (res.data || []).map((r) => ({
           ...r,
-          // ✅ FIX: matches router.get('/:id/image', …)
           photoUrl: `${API_BASE}/api/results/${r.id}/image`,
         }));
 
         setItems(data);
 
-        const ys = [...new Set(data.map(r => r.year))].sort((a, b) => b - a);
+        const ys = [...new Set(data.map((r) => r.year))].sort((a, b) => b - a);
         setYears(ys);
         setSelected(ys[0] ?? null);
       } catch (err) {
@@ -39,7 +35,7 @@ const Results = () => {
     })();
   }, []);
 
-  const show = selected ? items.filter(i => i.year === selected) : [];
+  const filtered = selected ? items.filter((i) => i.year === selected) : [];
 
   const slick = {
     dots: false,
@@ -52,13 +48,14 @@ const Results = () => {
     prevArrow: <PrevArrow />,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768,  settings: { slidesToShow: 1 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
 
   if (loading) {
     return <p className="text-center py-10 text-gray-500">Loading results…</p>;
   }
+
   if (!items.length) {
     return <p className="text-center py-10 text-gray-500">No results available.</p>;
   }
@@ -70,7 +67,7 @@ const Results = () => {
 
         {/* Year filter */}
         <div className="flex justify-center gap-2 mb-6 flex-wrap">
-          {years.map(year => (
+          {years.map((year) => (
             <button
               key={year}
               onClick={() => setSelected(year)}
@@ -87,18 +84,20 @@ const Results = () => {
 
         {/* Slider */}
         <Slider {...slick}>
-          {show.map(r => (
+          {filtered.map((r) => (
             <div key={r.id} className="p-2">
               <div className="rounded-xl text-center shadow-lg bg-gray-100 p-4">
+                {/* Image */}
                 <img
                   src={r.photoUrl}
                   alt={r.name}
                   className="w-40 h-40 object-cover mx-auto rounded-full border-4 border-yellow-400 mb-3"
-                  onError={e => {
+                  onError={(e) => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = '/fallback.png';
                   }}
                 />
+                {/* Info */}
                 <h4 className="text-lg font-bold uppercase">{r.name}</h4>
                 <p className="text-sm font-semibold text-gray-600">Rank {r.rank}</p>
                 <p className="inline-block bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded mt-2">

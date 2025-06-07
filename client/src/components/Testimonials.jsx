@@ -70,39 +70,47 @@ const Testimonials = () => {
         </h2>
 
         <Slider {...settings}>
-          {testimonials.map((t) => (
-            <div key={t.id} className="px-2">
-              <div className="flex flex-col md:flex-row bg-white rounded-lg shadow overflow-hidden h-full">
-                <div className="md:w-1/2">
-                  {t.embedUrl ? (
-                    <iframe
-                      src={t.embedUrl}
-                      title={`${t.name} testimonial`}
-                      className="w-full h-full min-h-[250px] object-cover"
-                      frameBorder="0"
-                      loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full bg-gray-200 text-gray-500">
-                      No video
-                    </div>
-                  )}
-                </div>
-                <div className="md:w-1/2 p-6 flex flex-col justify-center text-left">
-                  {t.message && (
-                    <p className="text-lg text-gray-700 mb-4 font-medium leading-relaxed">“{t.message}”</p>
-                  )}
-                  <div>
-                    <p className="text-blue-700 font-semibold text-md">{t.name}</p>
-                    {t.college && <p className="text-sm text-gray-500">{t.college}</p>}
-                  </div>
-                </div>
-              </div>
+  {testimonials.map((t) => (
+    <div key={t.id} className="px-2">
+      <div className="flex flex-col md:flex-row bg-white rounded-lg shadow h-[380px] overflow-hidden">
+        <div className="md:w-1/2 h-full">
+          {t.embedUrl ? (
+            <iframe
+              src={t.embedUrl}
+              title={`${t.name} testimonial`}
+              className="w-full h-full object-cover"
+              frameBorder="0"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-gray-200 text-gray-500">
+              No video
             </div>
-          ))}
-        </Slider>
+          )}
+        </div>
+
+        <div className="md:w-1/2 p-6 flex flex-col justify-between text-left bg-white">
+          <div>
+            {t.message && (
+              <p className="text-lg text-gray-700 font-medium leading-relaxed mb-4">
+                “{t.message}”
+              </p>
+            )}
+          </div>
+          <div>
+            <p className="text-blue-700 font-semibold text-md">{t.name}</p>
+            {t.college && (
+              <p className="text-sm text-gray-500">{t.college}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</Slider>
+
       </div>
     </section>
   );

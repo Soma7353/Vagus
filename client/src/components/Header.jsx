@@ -6,16 +6,15 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Optional: always scroll to top on route change
+    window.scrollTo(0, 0);
   }, [location.pathname]);
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center space-x-3">
-          <img src={logo} alt="Logo" className="w-12 h-12 object-contain" />
-          <span className="text-indigo-700 font-bold text-lg">NEET ACADEMY</span>
+        {/* Logo Only (No Text) */}
+        <div className="flex items-center">
+          <img src={logo} alt="VAGUS Logo" className="h-16 object-contain" />
         </div>
 
         {/* Navigation */}

@@ -12,7 +12,7 @@ const TABS = [
   { id: 'gallery', label: 'Gallery', component: <GalleryAdmin /> },
   { id: 'testimonials', label: 'Testimonials', component: <TestimonialAdmin /> },
   { id: 'downloads', label: 'Downloads', component: <DownloadAdmin /> },
-  { id: 'settings', label: 'Settings' }, // For popup toggle
+  { id: 'settings', label: 'Settings' },
 ];
 
 const AdminPanel = () => {
@@ -21,9 +21,7 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('slider');
 
   const handleTogglePopup = () => {
-    if (popupEnabled) {
-      setIsPopupOpen(true);
-    }
+    if (popupEnabled) setIsPopupOpen(true);
   };
 
   const renderTabContent = () => {

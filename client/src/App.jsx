@@ -11,7 +11,7 @@ import Courses from './components/Courses';
 import Features from './components/Features';
 import DownloadSection from './components/DownloadSection';
 import ScrollToHash from './components/ScrollToHash';
-import Slider from './components/Slider';
+import HomeSlider from './components/Slider';
 
 
 import DirectorsMessage from './pages/DirectorsMessage';
@@ -33,7 +33,7 @@ function App() {
           element={
             <>
               <main className="pt-24">
-                <Slider />
+                <HomeSlider />
                 <Hero />
                 <Courses />
                 <Features />

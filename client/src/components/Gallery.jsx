@@ -25,33 +25,6 @@ const Gallery = () => {
     fetchGallery();
   }, []);
 
-  // Custom arrow components
-  const CustomNextArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={`${className} !right-4 z-10 text-blue-600 text-4xl`}
-        style={{ ...style, display: 'block' }}
-        onClick={onClick}
-      >
-        ❯
-      </div>
-    );
-  };
-
-  const CustomPrevArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={`${className} !left-4 z-10 text-blue-600 text-4xl`}
-        style={{ ...style, display: 'block' }}
-        onClick={onClick}
-      >
-        ❮
-      </div>
-    );
-  };
-
   const settings = {
     dots: true,
     arrows: true,
@@ -59,8 +32,6 @@ const Gallery = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    nextArrow: <CustomNextArrow />,
-    prevArrow: <CustomPrevArrow />,
     responsive: [
       { breakpoint: 1280, settings: { slidesToShow: 3 } },
       { breakpoint: 1024, settings: { slidesToShow: 2 } },

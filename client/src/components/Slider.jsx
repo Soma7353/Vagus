@@ -34,7 +34,7 @@ const HomeSlider = () => {
     infinite: true,
     speed: 800,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 2000,
     slidesToShow: 1,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,

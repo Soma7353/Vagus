@@ -53,18 +53,33 @@ const Results = () => {
   };
 
   return (
-    <section id="results" className="pt-28 pb-16 bg-white">
+    <section id="results" className="pt-28 pb-16 bg-white scroll-mt-24">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Our Achievers</h2>
+
+        {/* ───── New Styled Heading ───── */}
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <div className="w-12 h-px bg-blue-500"></div>
+            <p className="text-sm font-semibold tracking-widest text-blue-600 uppercase">
+              Results
+            </p>
+            <div className="w-12 h-px bg-blue-500"></div>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            Our <span className="text-black">NEET/JEE</span>{' '}
+            <span className="text-blue-600 underline">Achievers</span>
+          </h2>
+        </div>
+        {/* ────────────────────────────── */}
 
         {/* Year Filter */}
         {years.length > 0 && (
-          <div className="flex justify-center gap-2 mb-6 flex-wrap">
+          <div className="flex justify-center gap-3 mb-6 flex-wrap">
             {years.map((year) => (
               <button
                 key={year}
                 onClick={() => setSelected(year)}
-                className={`px-4 py-1 rounded-full border transition ${
+                className={`px-4 py-1 rounded-full border font-semibold transition duration-200 ${
                   selected === year
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
@@ -76,31 +91,35 @@ const Results = () => {
           </div>
         )}
 
-        {/* Loading */}
+        {/* Loading / Empty / Results */}
         {loading ? (
           <p className="text-center py-10 text-gray-500">Loading results…</p>
         ) : !filtered.length ? (
-          <p className="text-center py-10 text-gray-500">No results found for {selected}</p>
+          <p className="text-center py-10 text-gray-500">
+            No results found for <span className="font-semibold">NEET {selected}</span>
+          </p>
         ) : (
           <Slider {...slick}>
             {filtered.map((r) => (
               <div key={r.id} className="p-2">
-                <div className="rounded-xl text-center shadow-lg bg-gray-100 p-4">
+                <div className="rounded-xl text-center shadow-xl bg-white p-5 hover:shadow-2xl transition duration-300">
                   <img
                     src={r.photoUrl}
                     alt={r.name}
                     loading="lazy"
-                    className="w-40 h-40 object-cover mx-auto rounded-full border-4 border-yellow-400 mb-3"
+                    className="w-36 h-36 md:w-40 md:h-40 object-cover mx-auto rounded-full border-4 border-yellow-400 mb-3"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
                       e.currentTarget.src = '/fallback.png';
                     }}
                   />
                   <h4 className="text-lg font-bold uppercase">{r.name}</h4>
-                  <p className="text-sm font-semibold text-gray-600">Rank {r.rank}</p>
-                  <p className="inline-block bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded mt-2">
-                    {r.college}
-                  </p>
+                  <p className="text-sm font-medium text-gray-700">Rank {r.rank}</p>
+                  {r.college && (
+                    <p className="inline-block bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded mt-2">
+                      {r.college}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}

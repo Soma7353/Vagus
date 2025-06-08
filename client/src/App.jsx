@@ -11,7 +11,7 @@ import Courses from './components/Courses';
 import Features from './components/Features';
 import DownloadSection from './components/DownloadSection';
 import ScrollToHash from './components/ScrollToHash';
-import HomeSlider from './components/Slider';
+import Slider from './components/Slider';
 
 
 import DirectorsMessage from './pages/DirectorsMessage';
@@ -20,6 +20,7 @@ import ContactPage from './pages/ContactPage';
 import AdminPanel from './pages/AdminPanel';
 import AdminLogin from './pages/AdminLogin';
 import About from './pages/About';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
@@ -32,8 +33,8 @@ function App() {
           path="/"
           element={
             <>
-              <main className="pt-24">
-                <HomeSlider />
+              <main className="pt-[96px]">
+                <Slider />
                 <Hero />
                 <Courses />
                 <Features />
@@ -46,6 +47,7 @@ function App() {
             </>
           }
         />
+        <Route path="/" element={<HomePage />} />
         <Route path="/directors-message" element={<DirectorsMessage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<ContactPage />} />

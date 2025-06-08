@@ -69,7 +69,7 @@ const Courses = () => {
   };
 
   return (
-    <section id="courses" className="pt-24 pb-16 bg-white">
+    <section id="courses" className="pt-28 pb-16 bg-white scroll-mt-24">
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-3xl font-bold text-center mb-4">
           Achieve Your <span className="text-indigo-600 underline">NEET</span> Dream With Tailored Courses
@@ -81,36 +81,23 @@ const Courses = () => {
 
         {/* Tabs */}
         <div className="flex justify-center mb-6 flex-wrap gap-2">
-          <button
-            onClick={() => setActiveTab('neet')}
-            className={`px-4 py-2 border ${
-              activeTab === 'neet'
-                ? 'bg-yellow-400 text-black font-semibold'
-                : 'bg-white text-gray-700'
-            } transition`}
-          >
-            Our NEET Courses
-          </button>
-          <button
-            onClick={() => setActiveTab('jee')}
-            className={`px-4 py-2 border ${
-              activeTab === 'jee'
-                ? 'bg-blue-600 text-white font-semibold'
-                : 'bg-white text-gray-700'
-            } transition`}
-          >
-            Our JEE Courses
-          </button>
-          <button
-            onClick={() => setActiveTab('foundation')}
-            className={`px-4 py-2 border ${
-              activeTab === 'foundation'
-                ? 'bg-blue-600 text-white font-semibold'
-                : 'bg-white text-gray-700'
-            } transition`}
-          >
-            Our Foundation Courses
-          </button>
+          {['neet', 'jee', 'foundation'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 border transition ${
+                activeTab === tab
+                  ? 'bg-yellow-400 text-black font-semibold'
+                  : 'bg-white text-gray-700'
+              }`}
+            >
+              {tab === 'neet'
+                ? 'Our NEET Courses'
+                : tab === 'jee'
+                ? 'Our JEE Courses'
+                : 'Our Foundation Courses'}
+            </button>
+          ))}
         </div>
 
         {/* Course Cards */}

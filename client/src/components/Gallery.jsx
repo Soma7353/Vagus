@@ -32,41 +32,54 @@ const Gallery = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    nextArrow: (
-      <div className="slick-arrow right-2 text-blue-600 text-2xl cursor-pointer z-10">❯</div>
-    ),
-    prevArrow: (
-      <div className="slick-arrow left-2 text-blue-600 text-2xl cursor-pointer z-10">❮</div>
-    ),
+    nextArrow: <div className="slick-arrow right-2 text-indigo-600 text-3xl">❯</div>,
+    prevArrow: <div className="slick-arrow left-2 text-indigo-600 text-3xl">❮</div>,
     responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 4 } },
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 480, settings: { slidesToShow: 1 } },
+      { breakpoint: 1280, settings: { slidesToShow: 3 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
 
   if (loading) {
-    return <div className="text-center py-10">Loading gallery...</div>;
+    return (
+      <section className="pt-24 pb-16 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 text-center text-lg text-gray-500">
+          Loading gallery...
+        </div>
+      </section>
+    );
   }
 
   if (images.length === 0) {
     return (
-      <div className="text-center py-10 text-gray-500">
-        No images found in the gallery.
-      </div>
+      <section className="pt-24 pb-16 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 text-center text-lg text-gray-500">
+          No images found in the gallery.
+        </div>
+      </section>
     );
   }
 
   return (
-    <section id="gallery" className="pt-24 pb-16 bg-gray-100">
+    <section id="gallery" className="pt-28 pb-20 bg-white scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6 text-blue-800">Gallery</h2>
+        {/* Heading block similar to Testimonial/Success Story */}
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <div className="w-12 h-px bg-indigo-500"></div>
+            <p className="text-sm font-semibold tracking-widest text-indigo-600 uppercase">Gallery</p>
+            <div className="w-12 h-px bg-indigo-500"></div>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-snug">
+            Explore Our <span className="text-indigo-600 underline">Campus</span> Moments
+          </h2>
+        </div>
 
         <Slider {...settings}>
           {images.map((img) => (
-            <div key={img.id} className="p-2">
-              <div className="relative overflow-hidden rounded shadow hover:shadow-lg transition">
+            <div key={img.id} className="px-2">
+              <div className="overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all relative">
                 <img
                   src={`${API_BASE}/api/gallery/image/${img.id}`}
                   alt={img.title || 'Gallery Image'}

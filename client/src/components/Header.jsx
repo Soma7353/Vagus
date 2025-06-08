@@ -10,14 +10,11 @@ const Header = () => {
   }, [location.pathname]);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow z-50 h-20">
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-full">
-        {/* Logo */}
+    <header className="fixed top-0 left-0 w-full bg-white shadow z-50 h-[96px]">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center">
           <img src={logo} alt="VAGUS Logo" className="h-16 object-contain" />
         </div>
-
-        {/* Navigation */}
         <nav className="hidden md:flex gap-6 text-sm font-medium">
           <Link to="/">Home</Link>
           <Link to="/directors-message">Director's Message</Link>
@@ -29,8 +26,6 @@ const Header = () => {
           <Link to="/contact">Contact</Link>
           <Link to="/about">About Us</Link>
         </nav>
-
-        {/* Enquire Now Button */}
         <Link
           to="/contact"
           className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-full font-semibold text-sm transition"

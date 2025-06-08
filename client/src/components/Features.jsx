@@ -10,15 +10,20 @@ const features = [
 ];
 
 const Features = () => (
-  <section id="features" className="py-20 bg-gray-100">
-    <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
+  <section id="features" className="pt-28 pb-20 bg-white scroll-mt-24">
+    <div className="max-w-7xl mx-auto px-6">
+      <h2 className="text-3xl font-bold text-center mb-12">
+        What Makes <span className="text-indigo-600 underline">Us Different?</span>
+      </h2>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {features.map((f, i) => (
-          <div key={i} className="bg-white p-6 rounded-xl text-center shadow-md hover:shadow-lg">
-            <div className="text-4xl mb-4">{f.icon}</div>
+          <div
+            key={i}
+            className="bg-gray-100 p-6 rounded-xl text-center shadow-md hover:shadow-lg transition"
+          >
+            <div className="text-5xl mb-4">{f.icon}</div>
             <h3 className="text-xl font-semibold text-indigo-600 mb-2">{f.title}</h3>
-            <p className="text-gray-600">{f.desc}</p>
+            <p className="text-gray-600 text-sm">{f.desc}</p>
           </div>
         ))}
       </div>

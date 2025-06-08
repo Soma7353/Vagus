@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { NextArrow, PrevArrow } from './BlueArrows';
+
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000';
 
@@ -34,11 +34,10 @@ const HomeSlider = () => {
     infinite: true,
     speed: 800,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 3000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    
   };
 
   return (

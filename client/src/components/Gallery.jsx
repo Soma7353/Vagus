@@ -25,6 +25,33 @@ const Gallery = () => {
     fetchGallery();
   }, []);
 
+  // Custom arrow components
+  const CustomNextArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={`${className} !right-4 z-10 text-blue-600 text-4xl`}
+        style={{ ...style, display: 'block' }}
+        onClick={onClick}
+      >
+        ❯
+      </div>
+    );
+  };
+
+  const CustomPrevArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={`${className} !left-4 z-10 text-blue-600 text-4xl`}
+        style={{ ...style, display: 'block' }}
+        onClick={onClick}
+      >
+        ❮
+      </div>
+    );
+  };
+
   const settings = {
     dots: true,
     arrows: true,
@@ -32,8 +59,8 @@ const Gallery = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    nextArrow: <div className="slick-arrow right-2 text-indigo-600 text-3xl">❯</div>,
-    prevArrow: <div className="slick-arrow left-2 text-indigo-600 text-3xl">❮</div>,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
     responsive: [
       { breakpoint: 1280, settings: { slidesToShow: 3 } },
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
@@ -64,7 +91,6 @@ const Gallery = () => {
   return (
     <section id="gallery" className="pt-28 pb-20 bg-white scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Heading block similar to Testimonial/Success Story */}
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-4 mb-2">
             <div className="w-12 h-px bg-indigo-500"></div>

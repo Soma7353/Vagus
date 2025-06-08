@@ -10,8 +10,8 @@ const Header = () => {
   }, [location.pathname]);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header className="fixed top-0 left-0 w-full bg-white shadow z-50 h-24">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-full">
         {/* Logo Only (No Text) */}
         <div className="flex items-center">
           <img src={logo} alt="VAGUS Logo" className="h-16 object-contain" />

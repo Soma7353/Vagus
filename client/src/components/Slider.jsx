@@ -46,14 +46,14 @@ const HomeSlider = () => {
   };
 
   return (
-    <div className="pt-20">
+    <div className="mt-[96px]"> {/* Offset the fixed navbar height */}
       {loading ? (
         <p className="text-center py-8 text-gray-500">Loading slider…</p>
       ) : (
         <div className="w-full max-w-screen-2xl mx-auto overflow-hidden">
           <Slider {...settings}>
             {images.map((img) => (
-              <div key={img.id} className="px-0">
+              <div key={img.id}>
                 <img
                   src={img.url}
                   alt={`Slide ${img.id}`}

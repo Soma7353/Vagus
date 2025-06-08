@@ -46,7 +46,7 @@ const HomeSlider = () => {
   };
 
   return (
-    <div className="pt-0">
+    <div className="pt-20">
       {loading ? (
         <p className="text-center py-8 text-gray-500">Loading slider…</p>
       ) : (

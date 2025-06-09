@@ -6,12 +6,12 @@ const ImageGalleryItem = sequelize.define('ImageGalleryItem', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   categoryId: {
     type: DataTypes.INTEGER,
-    references: { model: 'gallery_categories', key: 'id' },
+    references: { model: 'gallery_categoriess', key: 'id' },
     allowNull: false,
   },
   image: { type: DataTypes.TEXT('long'), allowNull: false }, // base64 string
 }, {
-  tableName: 'gallery_images',  // Keep table name same or rename if you want
+  tableName: 'gallery_imagess',  // Keep table name same or rename if you want
   timestamps: false,
 });
 

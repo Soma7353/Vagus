@@ -5,7 +5,7 @@ const GalleryCategory = sequelize.define('GalleryCategory', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
 }, {
-  tableName: 'gallery_categories',
+  tableName: 'gallery_categoriess',
   timestamps: false,
 });
 

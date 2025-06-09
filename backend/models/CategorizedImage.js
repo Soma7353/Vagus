@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
     static associate(models) {
       this.belongsTo(models.GalleryCategory, {
         foreignKey: 'categoryId',
-        as: 'category'
+        as: 'category',
       });
     }
   }
@@ -21,7 +21,10 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
     },
-    { sequelize, modelName: 'CategorizedImage' }
+    {
+      sequelize,
+      modelName: 'CategorizedImage',
+    }
   );
 
   return CategorizedImage;

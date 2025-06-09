@@ -1,19 +1,28 @@
-module.exports = (sequelize, DataTypes) => {
-  const categorizedImage = sequelize.define('categorizedImage', {
-    imageUrl: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    caption: {
-      type: DataTypes.STRING,
-    },
-  });
+const { Model, DataTypes } = require('sequelize');
 
-  categorizedImage.associate = models => {
-    categorizedImage.belongsTo(models.galleryCategory, {
-      foreignKey: 'categoryId',
-    });
-  };
+module.exports = (sequelize) => {
+  class CategorizedImage extends Model {
+    static associate(models) {
+      this.belongsTo(models.GalleryCategory, {
+        foreignKey: 'categoryId',
+        as: 'category'
+      });
+    }
+  }
 
-  return categorizedImage;
+  CategorizedImage.init(
+    {
+      url: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+    },
+    { sequelize, modelName: 'CategorizedImage' }
+  );
+
+  return CategorizedImage;
 };

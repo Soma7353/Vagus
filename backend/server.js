@@ -23,7 +23,7 @@ const galleryRoutes     = require('./routes/galleryRoutes');
 const resultRoutes      = require('./routes/resultRoutes');
 const adminRoutes       = require('./routes/admin');
 const sliderRoutes      = require('./routes/sliderRoutes'); //
-const imageGalleryRoutes = require('./routes/imageGalleryRoutes')
+
 
 
 // Route Mounting
@@ -33,7 +33,7 @@ app.use('/api/gallery',      galleryRoutes);
 app.use('/api/results',      resultRoutes);
 app.use('/api/auth',         adminRoutes);
 app.use('/api/slider',       sliderRoutes); // ✅ Added
-app.use('/api/image-gallery', require('./routes/imageGalleryRoutes'));
+
 
 // Default route
 app.get('/', (req, res) => {

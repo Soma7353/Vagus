@@ -11,8 +11,8 @@ import Courses from './components/Courses';
 import Features from './components/Features';
 import DownloadSection from './components/DownloadSection';
 import ScrollToHash from './components/ScrollToHash';
-import Slider from './components/Slider';
-
+import HomeSlider from './components/HomeSlider'; 
+import ResultsPage from './pages/ResultsPage';
 
 import DirectorsMessage from './pages/DirectorsMessage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -34,7 +34,7 @@ function App() {
           element={
             <>
               <main className="pt-[96px]">
-                <Slider />
+                <HomeSlider />
                 <Hero />
                 <Courses />
                 <Features />
@@ -55,6 +55,7 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/downloads" element={<DownloadSection />} />
         <Route path="/about" element={<About />} />
+        <Route path="/results" element={<ResultsPage />} />
       </Routes>
     </Router>
   );

@@ -3,7 +3,6 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-
 const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000';
 
 const HomeSlider = () => {
@@ -37,11 +36,10 @@ const HomeSlider = () => {
     autoplaySpeed: 3000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    
   };
 
   return (
-    <div className="mt-20"> {/* this pushes slider below fixed header */}
+    <div> {/* Removed extra padding */}
       {loading ? (
         <p className="text-center py-8 text-gray-500">Loading slider…</p>
       ) : (
@@ -52,7 +50,7 @@ const HomeSlider = () => {
                 <img
                   src={img.url}
                   alt={`Slide ${img.id}`}
-                  className="w-full h-[230px] object-cover"
+                  className="w-full h-[280px] sm:h-[230px] object-cover"
                 />
               </div>
             ))}

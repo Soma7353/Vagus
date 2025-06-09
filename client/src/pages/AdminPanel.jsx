@@ -1,57 +1,24 @@
 import React, { useState } from 'react';
 import ResultAdmin from './admin/ResultAdmin';
 import GalleryAdmin from './admin/GalleryAdmin';
+import GalleryAdminn from './admin/GalleryAdminn';
 import TestimonialAdmin from './admin/TestimonialAdmin';
 import DownloadAdmin from './admin/DownloadAdmin';
-import Popup from './admin/Popup';
 import SliderAdmin from './admin/SliderAdmin';
 
 const TABS = [
   { id: 'slider', label: 'Slider', component: <SliderAdmin /> },
   { id: 'results', label: 'Results', component: <ResultAdmin /> },
   { id: 'gallery', label: 'Gallery', component: <GalleryAdmin /> },
+  { id: 'gallery-categorized', label: 'Gallery Categorized', component: <GalleryAdminn /> },
   { id: 'testimonials', label: 'Testimonials', component: <TestimonialAdmin /> },
   { id: 'downloads', label: 'Downloads', component: <DownloadAdmin /> },
-  { id: 'settings', label: 'Settings' },
 ];
 
 const AdminPanel = () => {
-  const [popupEnabled, setPopupEnabled] = useState(false);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('slider');
 
-  const handleTogglePopup = () => {
-    if (popupEnabled) setIsPopupOpen(true);
-  };
-
   const renderTabContent = () => {
-    if (activeTab === 'settings') {
-      return (
-        <div className="p-4 bg-white shadow rounded">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <label className="font-medium mr-2">Enable Popup:</label>
-              <input
-                type="checkbox"
-                checked={popupEnabled}
-                onChange={() => setPopupEnabled(!popupEnabled)}
-                className="w-5 h-5"
-              />
-            </div>
-            <button
-              onClick={handleTogglePopup}
-              disabled={!popupEnabled}
-              className={`ml-4 px-4 py-2 rounded text-white transition ${
-                popupEnabled ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
-              }`}
-            >
-              Show Popup
-            </button>
-          </div>
-        </div>
-      );
-    }
-
     const tab = TABS.find((t) => t.id === activeTab);
     return tab?.component || null;
   };
@@ -79,12 +46,6 @@ const AdminPanel = () => {
 
       {/* Tab Content */}
       <div className="mb-12">{renderTabContent()}</div>
-
-      {/* Popup Component */}
-      <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-        <h2 className="text-xl font-semibold mb-2">Admin Alert</h2>
-        <p className="text-gray-700">This is your custom popup message.</p>
-      </Popup>
 
       {/* Logout Button */}
       <div className="flex justify-end mt-8">

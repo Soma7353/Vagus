@@ -29,11 +29,15 @@ const testimonialRoutes = require('./routes/testimonialRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
 const resultRoutes = require('./routes/resultRoutes');
+const galleryyRoutes = require('./routes/galleryyRoutes');
+const categorizedImageRoutes = require('./routes/categorizedImageRoutes');
 
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/downloads', downloadRoutes);
 app.use('/api/results', resultRoutes);
+app.use('/api/galleryy', galleryyRoutes);
+app.use('/api/galleryy', categorizedImageRoutes);
 
 // Root
 app.get('/', (req, res) => {

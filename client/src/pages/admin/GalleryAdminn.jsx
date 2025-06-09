@@ -1,60 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../api'; // Axios instance
+import api from '../../api'; // Your Axios instance
 import { toast } from 'react-toastify';
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
+//const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
 const GalleryAdminn = () => {
   const [categories, setCategories] = useState([]);
-  const [selectedCat, setSelectedCat] = useState('');
-  const [images, setImages] = useState([]);
+  const [selectedCat, setSelectedCat] = useState(null);
   const [file, setFile] = useState(null);
 
-  // Load categories on mount
+  // Load categories with images on mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCategories = async () => {
       try {
-        const res = await api.get('/api/image-gallery/categories');
-        const data = res.data;
-
-        // If no categories from backend, use defaults
-        if (data.length === 0) {
-          const defaultCats = [
-            { id: 1, name: 'Classroom' },
-            { id: 2, name: 'Office' },
-            { id: 3, name: 'Students' },
-            { id: 4, name: 'Interaction' },
-            { id: 5, name: 'Hostel' },
-            { id: 6, name: 'Dining Area' },
-          ];
-          setCategories(defaultCats);
-          setSelectedCat(defaultCats[0].id);
-        } else {
-          setCategories(data);
-          setSelectedCat(data[0].id);
-        }
+        const res = await api.get('/api/image-gallery');
+        setCategories(res.data);
+        if (res.data.length > 0) setSelectedCat(res.data[0].id);
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        console.error(err);
         toast.error('Failed to load categories');
       }
     };
-    fetchData();
+    fetchCategories();
   }, []);
 
-  // Load images for selected category
-  useEffect(() => {
-    if (selectedCat) fetchImagesByCategory();
-  }, [selectedCat]);
-
-  const fetchImagesByCategory = async () => {
-    try {
-      const res = await api.get(`/api/image-gallery/categories/${selectedCat}/images`);
-      setImages(res.data);
-    } catch (err) {
-      console.error('Error fetching images:', err);
-      toast.error('Failed to load images');
-    }
-  };
+  // Find selected category images
+  const selectedCategory = categories.find(cat => cat.id === parseInt(selectedCat));
 
   const handleUpload = async () => {
     if (!file || !selectedCat) return toast.error('Select category and image.');
@@ -64,12 +35,14 @@ const GalleryAdminn = () => {
     formData.append('image', file);
 
     try {
-      await api.post('/api/image-gallery/images', formData);
+      await api.post('/api/image-gallery/upload', formData);
       toast.success('Image uploaded successfully');
       setFile(null);
-      fetchImagesByCategory();
+      // Refresh categories with images after upload
+      const res = await api.get('/api/image-gallery');
+      setCategories(res.data);
     } catch (err) {
-      console.error('Upload failed:', err);
+      console.error(err);
       toast.error('Image upload failed');
     }
   };
@@ -77,11 +50,13 @@ const GalleryAdminn = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
     try {
-      await api.delete(`/api/image-gallery/images/${id}`);
+      await api.delete(`/api/image-gallery/image/${id}`);
       toast.success('Image deleted');
-      fetchImagesByCategory();
+      // Refresh categories with images after delete
+      const res = await api.get('/api/image-gallery');
+      setCategories(res.data);
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error(err);
       toast.error('Failed to delete image');
     }
   };
@@ -93,11 +68,11 @@ const GalleryAdminn = () => {
       <div className="mb-4">
         <label className="block mb-1 font-medium">Select Category:</label>
         <select
-          value={selectedCat}
+          value={selectedCat || ''}
           onChange={(e) => setSelectedCat(e.target.value)}
           className="w-full border rounded px-3 py-2"
         >
-          {categories.map((cat) => (
+          {categories.map(cat => (
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
@@ -121,10 +96,10 @@ const GalleryAdminn = () => {
       </button>
 
       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-        {images.map((img) => (
+        {(selectedCategory?.images || []).map(img => (
           <div key={img.id} className="relative group border p-2 rounded shadow">
             <img
-              src={`${API_BASE}/api/image-gallery/images/${img.id}`}
+              src={img.image}  // image stored as base64 data URL in DB
               alt=""
               className="w-full h-40 object-cover rounded"
             />

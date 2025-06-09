@@ -22,9 +22,8 @@ const downloadRoutes    = require('./routes/downloadRoutes');
 const galleryRoutes     = require('./routes/galleryRoutes');
 const resultRoutes      = require('./routes/resultRoutes');
 const adminRoutes       = require('./routes/admin');
-const sliderRoutes      = require('./routes/sliderRoutes'); //
-
-
+const sliderRoutes      = require('./routes/sliderRoutes'); 
+const imageGalleryRoutes = require('./routes/imageGalleryRoutes'); // <-- Add this
 
 // Route Mounting
 app.use('/api/testimonials', testimonialRoutes);
@@ -32,7 +31,8 @@ app.use('/api/downloads',    downloadRoutes);
 app.use('/api/gallery',      galleryRoutes);
 app.use('/api/results',      resultRoutes);
 app.use('/api/auth',         adminRoutes);
-app.use('/api/slider',       sliderRoutes); // ✅ Added
+app.use('/api/slider',       sliderRoutes); 
+app.use('/api/image-gallery', imageGalleryRoutes); // <-- Add this
 
 
 // Default route
@@ -41,8 +41,7 @@ app.get('/', (req, res) => {
 });
 
 // Sync Sequelize models (Optional)
-const Slider = require('./models/Slider'); // ✅ Import model
-sequelize.sync({ alter: true }) // or { force: true } if needed
+sequelize.sync({ alter: true })
   .then(() => console.log('Database synced'))
   .catch(err => console.error('Database sync error:', err));
 

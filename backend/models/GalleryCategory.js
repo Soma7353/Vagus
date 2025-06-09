@@ -1,20 +1,18 @@
-// models/galleryCategory.js
 module.exports = (sequelize, DataTypes) => {
-  const GalleryCategory = sequelize.define('GalleryCategory', {
+  const galleryCategory = sequelize.define('galleryCategory', {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  }, {
-    tableName: 'gallery_categories',
-    timestamps: false,
   });
 
-  GalleryCategory.associate = (models) => {
-    GalleryCategory.hasMany(models.CategorizedImage, {
+  galleryCategory.associate = (models) => {
+    galleryCategory.hasMany(models.categorizedImage, {
       foreignKey: 'category_id',
+      as: 'images',
+      onDelete: 'CASCADE',
     });
   };
 
-  return GalleryCategory;
+  return galleryCategory;
 };

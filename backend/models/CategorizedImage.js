@@ -1,28 +1,28 @@
-// models/categorizedImage.js
 module.exports = (sequelize, DataTypes) => {
-  const CategorizedImage = sequelize.define('CategorizedImage', {
-    photo: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+  const categorizedImage = sequelize.define('categorizedImage', {
     category_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    photo: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
-    }
+    },
   }, {
-    tableName: 'categorized_images',
     timestamps: false,
   });
 
-  CategorizedImage.associate = (models) => {
-    CategorizedImage.belongsTo(models.GalleryCategory, {
+  categorizedImage.associate = (models) => {
+    categorizedImage.belongsTo(models.galleryCategory, {
       foreignKey: 'category_id',
+      as: 'category',
+      onDelete: 'CASCADE',
     });
   };
 
-  return CategorizedImage;
+  return categorizedImage;
 };

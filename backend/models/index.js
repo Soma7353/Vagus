@@ -1,20 +1,27 @@
+const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const db = require('./models');
-const imageGalleryRoutes = require('./routes/imageGalleryRoutes');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: 'mysql',
+  }
+);
 
-app.use(cors());
-app.use(express.json());
+const db = {};
 
-app.use('/api/gallery', imageGalleryRoutes);
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
 
-db.sequelize.sync().then(() => {
-  console.log('Database synced');
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-});
+// Import models
+db.GalleryCategory = require('./GalleryCategory')(sequelize, DataTypes);
+db.CategorizedImage = require('./CategorizedImage')(sequelize, DataTypes);
+
+// Associations
+db.GalleryCategory.hasMany(db.CategorizedImage, { foreignKey: 'category_id' });
+db.CategorizedImage.belongsTo(db.GalleryCategory, { foreignKey: 'category_id' });
+
+module.exports = db;

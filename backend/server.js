@@ -23,6 +23,7 @@ const galleryRoutes     = require('./routes/galleryRoutes');
 const resultRoutes      = require('./routes/resultRoutes');
 const adminRoutes       = require('./routes/admin');
 const sliderRoutes      = require('./routes/sliderRoutes'); //
+const categorizedImageRoutes = require('./routes/categorizedImageRoutes')
 
 
 // Route Mounting

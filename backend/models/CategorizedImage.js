@@ -1,6 +1,5 @@
-// models/CategorizedImage.js
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('CategorizedImage', {
+  const CategorizedImage = sequelize.define('CategorizedImage', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -26,4 +25,14 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'categorized_images',
     timestamps: false
   });
+
+  // Association
+  CategorizedImage.associate = (models) => {
+    CategorizedImage.belongsTo(models.GalleryCategory, {
+      foreignKey: 'category_id',
+      as: 'category'
+    });
+  };
+
+  return CategorizedImage;
 };

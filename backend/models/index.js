@@ -1,43 +1,20 @@
-const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const db = require('./models');
+const imageGalleryRoutes = require('./routes/imageGalleryRoutes');
 
-// You can use your own DB connection config
-const sequelize = new Sequelize('your_db_name', 'your_db_user', 'your_db_password', {
-  host: 'localhost',
-  dialect: 'mysql',
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.use('/api/gallery', imageGalleryRoutes);
+
+db.sequelize.sync().then(() => {
+  console.log('Database synced');
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
-
-// Define CategorizedImage model
-const CategorizedImage = sequelize.define('CategorizedImage', {
-  category_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  photo: {
-    type: DataTypes.BLOB('long'),
-    allowNull: false,
-  },
-}, {
-  tableName: 'categorized_images',
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: false,
-});
-
-// Define GalleryCategory model
-const GalleryCategory = sequelize.define('GalleryCategory', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-}, {
-  tableName: 'gallery_categories',
-  timestamps: false,
-});
-
-// Export all models and Sequelize connection
-module.exports = {
-  sequelize,
-  Sequelize,
-  CategorizedImage,
-  GalleryCategory,
-};

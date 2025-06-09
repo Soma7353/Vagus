@@ -1,23 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const GalleryAdminn = () => {
-  const [category, setCategory] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [images, setImages] = useState([]);
+const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 
-  const categories = [
-    'Classroom',
-    'Office',
-    'Students',
-    'Interaction',
-    'Hostel',
-    'Dining Area',
-  ];
+const GalleryAdminn = () => {
+  const [categories, setCategories] = useState([]);
+  const [images, setImages] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchImages();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/api/galleryy/categories`);
+      setCategories(res.data);
+      setSelectedCategory(res.data[0]?.id || '');
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  };
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get('/api/galleryy');
+      const res = await axios.get(`${API_BASE}/api/galleryy/photo`);
       setImages(res.data);
     } catch (err) {
       console.error('Error fetching images:', err);
@@ -26,64 +35,62 @@ const GalleryAdminn = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!category || !imageFile) return alert('Please select category and image.');
+    if (!file || !selectedCategory) return alert('Select a file and category');
 
     const formData = new FormData();
-    formData.append('category', category);
-    formData.append('image', imageFile);
+    formData.append('photo', file); // MUST MATCH backend field
+    formData.append('category_id', selectedCategory);
 
     try {
-      await axios.post('/api/galleryy/upload', formData);
-      setCategory('');
-      setImageFile(null);
+      await axios.post(`${API_BASE}/api/galleryy/upload`, formData);
+      setFile(null);
       fetchImages();
     } catch (err) {
-      console.error('Error uploading image:', err);
+      console.error('Upload failed:', err);
+      alert('Upload failed.');
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
     try {
-      await axios.delete(`/api/galleryy/${id}`);
+      await axios.delete(`${API_BASE}/api/galleryy/images/${id}`);
       fetchImages();
     } catch (err) {
-      console.error('Error deleting image:', err);
+      console.error('Delete failed:', err);
     }
   };
 
-  useEffect(() => {
-    fetchImages();
-  }, []);
-
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Manage Categorized Gallery</h2>
+    <div className="p-4 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Gallery Image Manager</h2>
 
-      <form onSubmit={handleUpload} className="space-y-4 mb-6">
-        <div>
-          <label className="block font-medium mb-1">Select Category</label>
+      {/* Upload Form */}
+      <form onSubmit={handleUpload} className="mb-8 bg-white shadow p-4 rounded">
+        <div className="mb-3">
+          <label className="block font-semibold mb-1">Select Category</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border rounded px-3 py-2 w-full"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
             required
           >
-            <option value="">-- Choose Category --</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
             ))}
           </select>
         </div>
 
-        <div>
-          <label className="block font-medium mb-1">Choose Image</label>
+        <div className="mb-3">
+          <label className="block font-semibold mb-1">Select Image</label>
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => setImageFile(e.target.files[0])}
-            className="border rounded px-3 py-2 w-full"
+            onChange={(e) => setFile(e.target.files[0])}
             required
+            className="block"
           />
         </div>
 
@@ -95,24 +102,21 @@ const GalleryAdminn = () => {
         </button>
       </form>
 
-      <h3 className="text-lg font-semibold mb-2">Uploaded Images</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {/* Image List */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {images.map((img) => (
-          <div key={img.id} className="border rounded overflow-hidden shadow">
+          <div key={img.id} className="relative border rounded overflow-hidden shadow">
             <img
-              src={`data:image/jpeg;base64,${img.image_data}`}
-              alt={img.category}
+              src={`${API_BASE}/api/galleryy/images/${img.id}`}
+              alt={`Gallery ${img.id}`}
               className="w-full h-40 object-cover"
             />
-            <div className="p-2 text-center text-sm">
-              <p className="font-medium">{img.category}</p>
-              <button
-                onClick={() => handleDelete(img.id)}
-                className="text-red-500 mt-2 text-xs hover:underline"
-              >
-                Delete
-              </button>
-            </div>
+            <button
+              onClick={() => handleDelete(img.id)}
+              className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded"
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>

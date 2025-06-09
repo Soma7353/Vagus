@@ -22,7 +22,8 @@ const downloadRoutes    = require('./routes/downloadRoutes');
 const galleryRoutes     = require('./routes/galleryRoutes');
 const resultRoutes      = require('./routes/resultRoutes');
 const adminRoutes       = require('./routes/admin');
-const sliderRoutes      = require('./routes/sliderRoutes'); // ✅ Added
+const sliderRoutes      = require('./routes/sliderRoutes'); //
+
 
 // Route Mounting
 app.use('/api/testimonials', testimonialRoutes);
@@ -31,7 +32,7 @@ app.use('/api/gallery',      galleryRoutes);
 app.use('/api/results',      resultRoutes);
 app.use('/api/auth',         adminRoutes);
 app.use('/api/slider',       sliderRoutes); // ✅ Added
-
+app.use('/api/galleryy', categorizedImageRoutes);
 // Default route
 app.get('/', (req, res) => {
   res.send('NEET Academy API is running');

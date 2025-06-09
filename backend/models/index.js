@@ -6,8 +6,19 @@ require('dotenv').config();
 
 const db = {};
 
-const sequelize = new Sequelize(process.env.DB_URI || 'your_connection_string');
+// Use individual config values instead of DB_URI
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT || 'mysql',
+    logging: false, // optional: disable SQL logging
+  }
+);
 
+// Dynamically load all models in this directory
 fs.readdirSync(__dirname)
   .filter(file => file !== basename && file.endsWith('.js'))
   .forEach(file => {

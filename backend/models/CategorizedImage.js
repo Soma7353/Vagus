@@ -1,6 +1,6 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class CategorizedImage extends Model {
     static associate(models) {
       this.belongsTo(models.GalleryCategory, {

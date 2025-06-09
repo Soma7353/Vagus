@@ -18,17 +18,15 @@ const sequelize = new Sequelize(
 );
 
 fs.readdirSync(__dirname)
-  .filter((file) => file !== basename && file.endsWith('.js'))
-  .forEach((file) => {
+  .filter(file => file !== basename && file.endsWith('.js'))
+  .forEach(file => {
     const modelFunc = require(path.join(__dirname, file));
-    const model = modelFunc(sequelize, Sequelize.DataTypes); // ✅ Now valid
+    const model = modelFunc(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
 
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+Object.keys(db).forEach(model => {
+  if (db[model].associate) db[model].associate(db);
 });
 
 db.sequelize = sequelize;

@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Results from './components/Results';
-import Gallery from './components/Gallery';
+import Gallery from './components/Gallery'; // OLD Gallery on homepage
+import GallerySection from './components/GallerySection'; // ✅ NEW Full Gallery Page
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import Courses from './components/Courses';
@@ -39,15 +40,14 @@ function App() {
                 <Courses />
                 <Features />
                 <Results />
-                <Gallery />
+                <Gallery /> {/* ✅ old homepage gallery */}
                 <Testimonials />
-                
               </main>
               <Footer />
             </>
           }
         />
-        <Route path="/" element={<HomePage />} />
+        <Route path="/gallery" element={<GallerySection />} /> {/* ✅ new full gallery route */}
         <Route path="/directors-message" element={<DirectorsMessage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<ContactPage />} />

@@ -14,7 +14,7 @@ const GalleryAdminn = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get('/api/gallery/categories');
+        const res = await api.get('/api/image-gallery/categories');
         const data = res.data;
 
         // If no categories from backend, use defaults
@@ -48,7 +48,7 @@ const GalleryAdminn = () => {
 
   const fetchImagesByCategory = async () => {
     try {
-      const res = await api.get(`/api/gallery/categories/${selectedCat}/images`);
+      const res = await api.get(`/api/image-gallery/categories/${selectedCat}/images`);
       setImages(res.data);
     } catch (err) {
       console.error('Error fetching images:', err);
@@ -64,7 +64,7 @@ const GalleryAdminn = () => {
     formData.append('image', file);
 
     try {
-      await api.post('/api/gallery/images', formData);
+      await api.post('/api/image-gallery/images', formData);
       toast.success('Image uploaded successfully');
       setFile(null);
       fetchImagesByCategory();
@@ -77,7 +77,7 @@ const GalleryAdminn = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
     try {
-      await api.delete(`/api/gallery/images/${id}`);
+      await api.delete(`/api/image-gallery/images/${id}`);
       toast.success('Image deleted');
       fetchImagesByCategory();
     } catch (err) {
@@ -124,7 +124,7 @@ const GalleryAdminn = () => {
         {images.map((img) => (
           <div key={img.id} className="relative group border p-2 rounded shadow">
             <img
-              src={`${API_BASE}/api/gallery/images/${img.id}`}
+              src={`${API_BASE}/api/image-gallery/images/${img.id}`}
               alt=""
               className="w-full h-40 object-cover rounded"
             />

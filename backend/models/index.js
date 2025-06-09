@@ -1,27 +1,25 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
 require('dotenv').config();
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-  }
-);
 
 const db = {};
 
-db.Sequelize = Sequelize;
+const sequelize = new Sequelize(process.env.DB_URI || 'your_connection_string');
+
+fs.readdirSync(__dirname)
+  .filter(file => file !== basename && file.endsWith('.js'))
+  .forEach(file => {
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
+  });
+
+Object.keys(db).forEach(model => {
+  if (db[model].associate) db[model].associate(db);
+});
+
 db.sequelize = sequelize;
-
-// Import models
-db.GalleryCategory = require('./GalleryCategory')(sequelize, DataTypes);
-db.CategorizedImage = require('./CategorizedImage')(sequelize, DataTypes);
-
-// Associations
-db.GalleryCategory.hasMany(db.CategorizedImage, { foreignKey: 'category_id' });
-db.CategorizedImage.belongsTo(db.GalleryCategory, { foreignKey: 'category_id' });
+db.Sequelize = Sequelize;
 
 module.exports = db;

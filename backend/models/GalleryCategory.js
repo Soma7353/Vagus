@@ -6,10 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-  galleryCategory.associate = (models) => {
+  galleryCategory.associate = models => {
     galleryCategory.hasMany(models.categorizedImage, {
-      foreignKey: 'category_id',
-      as: 'images',
+      foreignKey: 'categoryId',
       onDelete: 'CASCADE',
     });
   };

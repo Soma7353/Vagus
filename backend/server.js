@@ -33,7 +33,7 @@ app.use('/api/gallery',      galleryRoutes);
 app.use('/api/results',      resultRoutes);
 app.use('/api/auth',         adminRoutes);
 app.use('/api/slider',       sliderRoutes); // ✅ Added
-app.use('/api/gallery', imageGalleryRoutes);
+app.use('/api/image-gallery', imageGalleryRoutes);
 // Default route
 app.get('/', (req, res) => {
   res.send('NEET Academy API is running');

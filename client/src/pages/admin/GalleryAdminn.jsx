@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../api'; // // Axios instance
+import api from '../../api'; // Axios instance
 import { toast } from 'react-toastify';
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
@@ -15,9 +15,23 @@ const GalleryAdminn = () => {
     const fetchData = async () => {
       try {
         const res = await api.get('/api/gallery/categories');
-        setCategories(res.data);
-        if (res.data.length) {
-          setSelectedCat(res.data[0].id);
+        const data = res.data;
+
+        // If no categories from backend, use defaults
+        if (data.length === 0) {
+          const defaultCats = [
+            { id: 1, name: 'Classroom' },
+            { id: 2, name: 'Office' },
+            { id: 3, name: 'Students' },
+            { id: 4, name: 'Interaction' },
+            { id: 5, name: 'Hostel' },
+            { id: 6, name: 'Dining Area' },
+          ];
+          setCategories(defaultCats);
+          setSelectedCat(defaultCats[0].id);
+        } else {
+          setCategories(data);
+          setSelectedCat(data[0].id);
         }
       } catch (err) {
         console.error('Error fetching categories:', err);

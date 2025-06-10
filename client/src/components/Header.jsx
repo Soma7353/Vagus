@@ -11,9 +11,9 @@ const Header = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: "Director's Message", path: '/directors-message' },
-    { name: 'Courses', path: '/#courses' },
+    { name: 'Courses', path: '/', scrollTo: 'courses' },
     { name: 'Results', path: '/results' },
-   { name: 'Gallery', path: '/gallery' },
+    { name: 'Gallery', path: '/gallery' },
     { name: 'Downloads', path: '/downloads' },
     { name: 'Testimonials', path: '/', scrollTo: 'testimonials' },
     { name: 'Contact', path: '/contact' },
@@ -25,11 +25,31 @@ const Header = () => {
     setMenuOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const scrollTo = localStorage.getItem('scrollTo');
+    if (scrollTo && location.pathname === '/') {
+      const element = document.getElementById(scrollTo);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+      localStorage.removeItem('scrollTo');
+    }
+  }, [location.pathname]);
+
   const handleNavClick = (link) => {
     if (link.scrollTo) {
-      localStorage.setItem('scrollTo', link.scrollTo);
+      if (location.pathname === '/') {
+        const element = document.getElementById(link.scrollTo);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        localStorage.setItem('scrollTo', link.scrollTo);
+        navigate(link.path);
+      }
+    } else {
+      navigate(link.path);
     }
-    navigate(link.path);
   };
 
   return (

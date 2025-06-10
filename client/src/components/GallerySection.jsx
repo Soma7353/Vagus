@@ -11,7 +11,8 @@ const GallerySection = () => {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const res = await axios.get('https://vagus-1.onrender.com/api/image-gallery');
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/image-gallery`);
+
         setCategories(res.data);
       } catch (err) {
         console.error('Gallery fetch error:', err);

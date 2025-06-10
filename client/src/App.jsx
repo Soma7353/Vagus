@@ -21,7 +21,7 @@ import ContactPage from './pages/ContactPage';
 import AdminPanel from './pages/AdminPanel';
 import AdminLogin from './pages/AdminLogin';
 import About from './pages/About';
-import HomePage from './pages/HomePage';
+
 
 function App() {
   return (
@@ -34,15 +34,20 @@ function App() {
           path="/"
           element={
             <>
-              <main className="pt-[96px]">
-                <HomeSlider />
-                <Hero />
-                <Courses />
-                <Features />
-                <Results />
-                <Gallery /> {/* ✅ old homepage gallery */}
-                <Testimonials />
-              </main>
+             <main className="pt-[96px]">
+  <HomeSlider />
+  <Hero />
+  <div id="courses">
+    <Courses />
+  </div>
+  <Features />
+  <Results />
+  <Gallery />
+  <div id="testimonials">
+    <Testimonials />
+  </div>
+</main>
+
               <Footer />
             </>
           }

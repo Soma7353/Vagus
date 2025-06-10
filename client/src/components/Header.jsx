@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { FaBars, FaTimes } from 'react-icons/fa';
@@ -20,33 +20,10 @@ const Header = () => {
     { name: 'About Us', path: '/about' },
   ];
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setMenuOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const scrollTo = localStorage.getItem('scrollTo');
-    if (scrollTo && location.pathname === '/') {
-      const element = document.getElementById(scrollTo);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-      localStorage.removeItem('scrollTo');
-    }
-  }, [location.pathname]);
-
   const handleNavClick = (link) => {
+    setMenuOpen(false);
     if (link.scrollTo) {
-      if (location.pathname === '/') {
-        const element = document.getElementById(link.scrollTo);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else {
-        localStorage.setItem('scrollTo', link.scrollTo);
-        navigate(link.path);
-      }
+      navigate(`/#${link.scrollTo}`);
     } else {
       navigate(link.path);
     }
@@ -93,10 +70,7 @@ const Header = () => {
             {navLinks.map((link) => (
               <li key={link.name} className="border-b pb-2">
                 <button
-                  onClick={() => {
-                    handleNavClick(link);
-                    setMenuOpen(false);
-                  }}
+                  onClick={() => handleNavClick(link)}
                   className="w-full text-left"
                 >
                   {link.name}

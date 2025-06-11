@@ -12,7 +12,7 @@ sequelize.authenticate()
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://vagus.vercel.app'],
+  origin: ['http://localhost:3000', 'https://vagus.vercel.app' ,'https://vag-eta.vercel.app'],
   credentials: true,
 }));
 

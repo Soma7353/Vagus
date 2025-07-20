@@ -41,9 +41,10 @@ app.get('/', (req, res) => {
 });
 
 // Sync Sequelize models (Optional)
-sequelize.sync({ alter: true })
-  .then(() => console.log('Database synced'))
+sequelize.sync()
+  .then(() => console.log('Database synced (safe mode)'))
   .catch(err => console.error('Database sync error:', err));
+
 
 // Start server
 const PORT = process.env.PORT || 3000;
